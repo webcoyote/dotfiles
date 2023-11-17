@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $OSTYPE != 'darwin'* ]]; then
+    echo >&2 "ERROR: this script is for Mac OSX"
+    exit 1
+fi
+
+##############
+# Annoyances
+##############
+# Disable the sound effects on boot
+#sudo nvram SystemAudioVolume=" "
+
+##############
+# Create SSH key
+##############
+if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
+    ssh-keygen -t ed25519 -a 100 </dev/null
+fi
+
+##############
+# Keyboard
+##############
+# Set fast keyboard repeat rate
+defaults write NSGlobalDomain KeyRepeat -int 1
+defaults write NSGlobalDomain InitialKeyRepeat -int 10
+
+# enable keyboard navigation to move focus between controls (tab / shift-tab
+defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+
+# default behavior when holding down a key is to bring up a menu of characters with different diacritical marks.
+# Try holding down ‘e’ to see this in action. If you want to instead repeat characters when a key is held:
+defaults write -g ApplePressAndHoldEnabled -bool false
+
+##############
+# Finder
+##############
+# Finder: show status bar
+defaults write com.apple.finder ShowStatusBar -bool true
+
+# Finder: show path bar
+defaults write com.apple.finder ShowPathbar -bool true
+
+# Allow quitting Finder
+defaults write com.apple.finder QuitMenuItem -bool true
+
+##############
+# Misc
+##############
+# Hide the dock
+defaults write com.apple.dock autohide -bool true && killall Dock
+
+# Disable crash reporting
+defaults write com.apple.CrashReporter DialogType none
+
+##############
+# Install brew
+##############
+if ! command -v brew &> /dev/null ; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+    brew update
+    brew upgrade
+fi
+
+##############
+# Install applications
+##############
+Applications=(
+    alt-tab                     # use Option-Tab as a better Alt-Tab
+    atuin                       # better shell history
+    alacritty                   # terminal
+    atuin                       # better terminal history
+    1password                   # password management
+    direnv                      # per-directory environment
+    fd                          # better than unix `find`
+    firefox                     # low market-share browser
+    gh                          # github command-line
+    git                         # yeah, it's the best
+    git-lfs                     # big files
+    gnupg                       # PGP / GPG encryption
+    google-chrome               # spyware-riddled web browser
+    iterm2                      # terminal
+    jq                          # mangle JSON from the command line
+    kitty                       # terminal
+    microsoft-office            # word/excel
+    microsoft-remote-desktop    # visit my old PC
+    netcat                      # play with sockets
+    rectangle                   # hotkeys to position windows
+    rg                          # better than unix `grep`
+    starship                    # console prompt
+    steam                       # games
+    sublime-text                # better text editor
+    tig                         # graphical git commit viewer
+    tree                        # show directory tree in terminal
+    visual-studio-code          # development environment
+    wget                        # curl with different defaults
+)
+CaskApps=(
+    zoom                        # video chat 
+)
+brew install "${Applications[@]}"
+brew install --cask "${CaskApps[@]}"

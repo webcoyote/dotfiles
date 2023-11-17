@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+APP="grub-customizer"
+PPA="ppa:danielrichter2007/grub-customizer"
+
+# Check installed
+if command -v "$APP" &> /dev/null ; then
+    echo "$APP already installed"
+    exit 0
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install application
+sudo add-apt-repository "$PPA"
+sudo apt-get update
+sudo apt-get install -y "$APP"
+
+# Done
+echo "$APP installed successfully"

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Inspired by: https://news.ycombinator.com/item?id=18898865
+set -euo pipefail
+firefox --new-instance --profile "$(mktemp -d)" </dev/null &>/dev/null & disown

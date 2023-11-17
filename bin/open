@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "$OSTYPE" in
+    linux*)
+        OPEN=xdg-open
+    ;;
+
+    darwin*)
+        OPEN=/usr/bin/open
+    ;;
+
+    msys*|cygwin*)
+        OPEN=start
+    ;;
+
+    *)
+        echo >&2 "ERROR: unknown OS"
+        exit 1
+    ;;
+esac
+
+"$OPEN" "$@"

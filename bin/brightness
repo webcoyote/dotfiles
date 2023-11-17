@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# from https://askubuntu.com/a/951339 with error checking added
+set -euo pipefail
+
+if ! command -v xrandr &>/dev/null ; then
+    echo >&2 "ERROR: xrandr not installed"
+    exit 1
+elif [[ "$#" -ne 1 ]]; then
+    echo "Usage: brighntess BRIGHTNESS"
+    echo "BRIGHTNESS is a float (0.0-1.0)"
+elif (( $(echo "$1 > 1.0" | bc -l) )) ; then
+    echo >&2 "ERROR: Invalid floating point value: too large"
+    exit 1
+elif (( $(echo "$1 < 0.2" | bc -l) )) ; then
+    echo >&2 "ERROR: Invalid floating point value: too small"
+    exit 1
+else
+    xrandr --listmonitors                                   \
+        | grep "^ "                                         \
+        | cut -f 6 -d' '                                    \
+        | xargs -ri xrandr --output "{}" --brightness "$1"  \
+    #
+fi

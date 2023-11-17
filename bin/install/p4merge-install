@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+APP="p4merge"
+URL="https://cdist2.perforce.com/perforce/r18.4/bin.linux26x86_64/p4v.tgz"
+
+# Check installed
+if command -v "$APP" >/dev/null 2>&1 ; then
+    echo "$APP was already installed"
+    exit
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    # Download archive
+    cd "$MYTMPDIR"
+    wget "$URL"
+    ARCHIVE="$(basename "$URL")"
+
+    # Extract archive into /opt/perforce without top-most directory
+    sudo mkdir -p /opt/perforce
+    sudo tar xfz "$ARCHIVE" --directory="/opt/perforce" --strip-components=1
+)
+
+# Find applications that do not have extensions ...
+# ... and create symbolic links for them in /usr/local/bin
+find "/opt/perforce/bin"    \
+    -maxdepth 1             \
+    -type f                 \
+    -executable             \
+    ! -name "*.*"           \
+    -print0                 \
+| while read -r -d $'\0' FILENAME; do
+    sudo ln -s "$FILENAME" "/usr/local/bin/$(basename "$FILENAME")"
+done
+
+# Done
+echo "$APP installed successfully"

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+[[ -x synclient ]] && exec synclient TouchpadOff=1

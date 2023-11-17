@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# Launch buildkite.com page for this project
+set -euo pipefail
+
+case "$OSTYPE" in
+    linux*)
+        OPEN=xdg-open
+    ;;
+
+    darwin*)
+        OPEN=/usr/bin/open
+    ;;
+
+    msys*|cygwin*)
+        OPEN=start
+    ;;
+
+    *)
+        echo >&2 "ERROR: unknown OS"
+        exit 1
+    ;;
+esac
+
+REPO_URL="$(git config --get remote.origin.url)"
+
+# We only want the name, not the URL
+REPO_NAME="$(basename "$REPO_URL")"
+
+# Remove trailing git extension
+REPO_NAME="${REPO_NAME%.git}"
+
+# Convert "." to "-dot-"
+# This is a convention that *most* of the OMG repositories follow (but not OMGPatch)
+RE='(.*)\.(.*)'
+while [[ "$REPO_NAME" =~ $RE ]]; do
+  REPO_NAME="${BASH_REMATCH[1]}-dot-${BASH_REMATCH[2]}"
+done
+
+# Convert to lowercase
+REPO_NAME="${REPO_NAME,,}"
+
+# Launch the browser
+"$OPEN" "https://buildkite.com/one-more-game/$REPO_NAME"

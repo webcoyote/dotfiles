@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+exec "$SCRIPT_DIR/_install-via-appimage" krita "http://mirrors.ocf.berkeley.edu/kde/stable/krita/4.1.7/krita-4.1.7-x86_64.appimage"

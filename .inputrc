@@ -1,0 +1,12 @@
+$include /etc/inputrc
+# These settings do not work in Git-Bash when included in .inputrc
+Tab: menu-complete                  # modern tab-completion
+set editing-mode vi                 # instead of emacs
+set bell-style none
+set completion-ignore-case on       # case-insensitive tab completion
+set completion-map-case on          # treat - and _ as equivalent for tab completion
+set mark-directories on             # add slash after tab-completed directory
+set mark-symlinked-directories on   # add slash after tab-completed symlinked-directory
+set show-all-if-ambiguous on        # show matches on tab immediately
+set show-all-if-unmodified on       # show matches on tab immediately
+set match-hidden-files off          # do not match hidden files unless '.' prefixed

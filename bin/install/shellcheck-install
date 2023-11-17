@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+APP="shellcheck"
+VERSION="stable"
+TAR="${APP}-${VERSION}.linux.x86_64.tar.xz"
+URL="https://github.com/koalaman/${APP}/releases/download/${VERSION}/${TAR}"
+
+# Check installed
+if [[ -z "${FORCE:-}" ]]; then
+    if command -v "$APP" &> /dev/null ; then
+        echo "$APP already installed"
+        echo "use 'FORCE=1 ${BASH_SOURCE[0]}' to force"
+        exit 0
+    fi
+fi
+
+# Check platform
+case "$OSTYPE" in
+    linux*)
+    ;;
+    *)
+        echo >&2 "ERROR: install not implemented for $OSTYPE"
+        exit 1
+    ;;
+esac
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    cd "$MYTMPDIR"
+    wget "$URL"
+    tar -xvf "$MYTMPDIR/$TAR"
+    sudo mv "${APP}-${VERSION}/${APP}" "/usr/local/bin/"
+)
+
+# Done
+"$APP" --version
+echo "$APP installed successfully"

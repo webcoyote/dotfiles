@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+APP="bcompare"
+URL="https://www.scootersoftware.com/bcompare-4.2.8.23479_amd64.deb"
+"$SCRIPT_DIR/_install-via-package" "$APP" "$URL"
+
+# Configure
+git config --global diff.tool bc3
+git config --global difftool.bc3.path bcompare
+git config --global difftool.bc3.trustExitCode true
+git config --global merge.tool bc3
+git config --global mergetool.bc3.path bcompare
+git config --global mergetool.bc3.trustExitCode true
+
+# Done
+echo "$APP configured successfully"

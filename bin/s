@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
+if [[ $(uname -r) =~ icrosoft ]]; then
+    MY_OSTYPE=wsl
+else
+    MY_OSTYPE="$OSTYPE"
+fi
+
+case "$MY_OSTYPE" in
+    darwin*)
+        exec /opt/homebrew/bin/subl "$@"
+    ;;
+
+    linux*)
+        exec subl "$@" </dev/null >/dev/null 2>&1
+    ;;
+
+    msys*)
+        "/c/Program Files/Sublime Text 3/subl.exe" "$@" </dev/null >/dev/null 2>&1 &
+    ;;
+
+    cygwin*)
+        "/mnt/c/Program Files/Sublime Text 3/subl.exe" "$@" </dev/null >/dev/null 2>&1 &
+    ;;
+
+    wsl*)
+        # WSL seems to be unable to load files properly when they have absolute paths.
+        # $ "s /home/pat/foo" => fails
+        # $ "s ../foo" => ok
+        #
+        # What we want to do:
+        # exec "/mnt/c/Program Files/Sublime Text 3/subl.exe" "$@" </dev/null >/dev/null 2>&1 &
+        #
+        # Hack to make it work:
+        "/mnt/c/Program Files/Sublime Text 3/subl.exe" </dev/null >/dev/null 2>&1 &
+        for file in "$@";  do
+            if [[ ! -d "$file" ]] || [[ $# == 1 ]]; then
+                # Resolve symlinks
+                file="$(realpath -P "$file")"
+
+                pushd "$(dirname "$file")" &>/dev/null || exit
+                "/mnt/c/Program Files/Sublime Text 3/subl.exe" "$(basename "$file")" </dev/null >/dev/null 2>&1 &
+                popd &>/dev/null || exit
+            fi
+        done
+    ;;
+
+    *)
+        echo "Unknown OS: $MY_OSTYPE"
+        exit 1
+    ;;
+esac

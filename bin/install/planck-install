@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP="planck"
+
+# Check installed
+if command -v "$APP" &> /dev/null ; then
+    echo "$APP already installed"
+    exit 0
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# http://planck-repl.org/guide-all.html
+sudo add-apt-repository "ppa:mfikes/planck"
+sudo apt-get update
+sudo apt-get install -y planck
+echo "$APP installed successfully"

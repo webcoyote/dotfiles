@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  exec sudo -p "Restarting with sudo; enter password: " /usr/bin/env bash "$0" "$@"
+fi
+
+# Defining HEREDOCS "almost just like" Ruby
+# http://ss64.com/bash/read.html
+# http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+# Example:
+# heredoc MESSAGE << EOF
+#    your favorite text here
+# EOF
+heredoc(){ IFS=$'\n' read -r -d '' "${1}" || true; }
+
+heredoc HIBERNATE << EOF
+[Re-enable hibernate by default in upower]
+Identity=unix-user:*
+Action=org.freedesktop.upower.hibernate
+ResultActive=yes
+
+[Re-enable hibernate by default in logind]
+Identity=unix-user:*
+Action=org.freedesktop.login1.hibernate;org.freedesktop.login1.handle-hibernate-key;org.freedesktop.login1;org.freedesktop.login1.hibernate-multiple-sessions;org.freedesktop.login1.hibernate-ignore-inhibit
+ResultActive=yes
+EOF
+
+echo "$HIBERNATE" > "/etc/polkit-1/localauthority/50-local.d/com.ubuntu.enable-hibernate.pkla"

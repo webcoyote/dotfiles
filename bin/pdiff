@@ -1,0 +1,100 @@
+#!/bin/bash
+set -euo pipefail
+
+# Do not perform comparison on empty files
+for arg in "$@"; do
+    if [[ "$arg" == "/dev/null" ]]; then
+        echo "Skipping " "$@"
+        exit 0
+    fi
+done
+
+# Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
+if [[ $(uname -r) =~ icrosoft ]]; then
+    MY_OSTYPE=wsl
+else
+    MY_OSTYPE="$OSTYPE"
+fi
+
+# Convert arguments for WSL
+declare -a ARGS
+case "$MY_OSTYPE" in
+    wsl*)
+        for arg in "$@"; do
+            ARGS+=("$(wslpath -w "$arg")")
+        done
+    ;;
+
+    *)
+        for arg in "$@"; do
+            ARGS+=("$arg")
+        done
+    ;;
+esac
+
+# Supported operating systems
+declare -A DIFF_OS
+DIFF_OS+=([msys*|cygwin*]="WinMerge BeyondCompare ")
+DIFF_OS+=([wsl]="WinMergeWSL BeyondCompareWSL ")
+
+declare -a BeyondCompare
+BeyondCompare+=("/c/Program Files/Beyond Compare 4/BComp.exe")
+BeyondCompare_Args=()
+
+declare -a BeyondCompareWSL
+BeyondCompareWSL+=("/mnt/c/Program Files/Beyond Compare 4/BComp.exe")
+BeyondCompareWSL_Args=()
+
+declare -a WinMerge
+WinMerge+=("/c/Program Files/WinMerge/WinMergeU.exe")
+WinMerge+=("$HOME/AppData/Local/Programs/WinMerge/WinMergeU.exe")
+WinMerge_Args=("-e" "-ub")
+
+declare -a WinMergeWSL
+WinMergeWSL+=("/mnt/c/Program Files/WinMerge/WinMergeU.exe")
+WinMergeWSL+=("/mnt/c/Users/$USER/AppData/Local/Programs/WinMerge/WinMergeU.exe")
+WinMergeWSL_Args=("-e" "-ub")
+
+declare -a Fallback
+Fallback+=("/usr/bin/meld")
+Fallback_Args=()
+
+function get_difftool_path () {
+    for OS in "${!DIFF_OS[@]}" ; do
+        if [[ $MY_OSTYPE =~ $OS ]]; then
+            for TOOL in ${DIFF_OS[$OS]}; do
+                eval TOOLPATHS=\( \"\${${TOOL}[@]}\" \)
+                for TOOLPATH in "${TOOLPATHS[@]}" ; do
+                    if [[ -x "$TOOLPATH" ]]; then
+                        DIFFTOOLNAME="$TOOL"
+                        DIFFTOOLPATH="$TOOLPATH"
+                        return 0
+                    fi
+                done
+            done
+        fi
+    done
+
+    # Try the default tools
+    for TOOLPATH in "${Fallback[@]}" ; do
+        if [[ -x "$TOOLPATH" ]]; then
+            DIFFTOOLNAME="Fallback"
+            DIFFTOOLPATH="$TOOLPATH"
+            return 0
+        fi
+    done
+
+    exit 1
+}
+
+if ! get_difftool_path ; then
+    echo >&2 "ERROR: Unable to find diff tool for '$MY_OSTYPE' OS"
+    exit 1
+fi
+eval DIFFTOOLARGS=\( \${${DIFFTOOLNAME}_Args[@]} \)
+# echo "$DIFFTOOLNAME"
+# echo "$DIFFTOOLPATH"
+# echo "${DIFFTOOLARGS[@]}"
+
+echo "Diffing $@"
+exec "$DIFFTOOLPATH" "${DIFFTOOLARGS[@]}" "${ARGS[@]}"

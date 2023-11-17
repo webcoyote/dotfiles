@@ -1,0 +1,6 @@
+#!/bin/bash
+# Calculate W3C SubResource Integrity check hash for file
+# https://www.srihash.org/
+set -euo pipefail
+echo -n "sha384-"
+openssl dgst -sha384 -binary "$1" | openssl base64 -A

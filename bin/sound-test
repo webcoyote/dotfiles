@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+paplay /usr/share/sounds/sound-icons/xylofon.wav

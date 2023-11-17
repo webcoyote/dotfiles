@@ -1,0 +1,4 @@
+[diff]
+    tool = pdiff
+[merge]
+    tool = pdiff

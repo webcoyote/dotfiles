@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+
+if [[ $(uname -r) =~ icrosoft ]]; then
+    cd "$@" && explorer.exe .
+elif [[ -x "/bin/start" ]]; then
+    "/bin/start" "$@"
+fi

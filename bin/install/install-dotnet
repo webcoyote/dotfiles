@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+INSTALL_SCRIPT=$(mktemp --quiet --tmpdir XXX-dotnet-install.sh)
+curl -sSL https://dot.net/v1/dotnet-install.sh -o "$INSTALL_SCRIPT"
+chmod +x "$INSTALL_SCRIPT"
+"$INSTALL_SCRIPT" --channel 7.0
+
+echo -e "\n\nRemember to add '~/.dotnet' to PATH"

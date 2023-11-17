@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# by Patrick Wyatt 12/2019
+# MIT License
+# set -euo pipefail ==> Do not use "bash strict mode" because script is sourced
+#
+#
+# Source this file from your .bashrc/.zshrc/.profile file to
+# configure VcXsrv XWindows display to run in a secure fashion,
+# for example:
+#
+#   if [[ $(uname -r) =~ "icrosoft" ]]; then
+#       source "$HOME/bin/vcxsrv"
+#   fi
+#
+
+
+# Since this script wants to export the DISPLAY variable it must be sourced
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    echo >&2 "ERROR: This script must be sourced, for example:"
+    echo >&2 "  source $(basename "${BASH_SOURCE[0]}")"
+    exit 1
+fi
+
+
+# This script is only intended for Windows Subsystem for Linux
+if [[ ! $(uname -r) =~ icrosoft ]]; then
+    echo >&2 "ERROR: This script is intended to be run in Windows Subsystem for Linux"
+    return 1
+fi
+
+
+# Find cmd.exe
+SYS32DIR="/mnt/c/Windows/System32"
+if [[ ! -x "$SYS32DIR/cmd.exe" ]]; then
+    echo >&2 "ERROR: Unable to find cmd.exe in '$SYS32DIR'"
+    return 1
+fi
+
+
+# Verify VcXsrv is installed
+VCXSRV_DIR="/mnt/c/Program Files/VcXsrv"
+VCXSRV_EXE="$VCXSRV_DIR/vcxsrv.exe"
+if [[ ! -x "$VCXSRV_EXE" ]]; then
+    echo >&2 "ERROR: Unable to find VcXsrv application:"
+    echo >&2 "  $VCXSRV_EXE"
+    return 1
+fi
+
+
+# Configure display to point to WSL host
+DISPLAY="$(grep </etc/resolv.conf nameserver | awk '{print $2}'):0"
+export DISPLAY
+
+# Create shared .XAuthority file so VcxSrv and WSL both use the same cookie
+WIN_USER_PROFILE="$("$SYS32DIR/cmd.exe" /c "<nul set /p=%UserProfile%" 2>/dev/null)"    # C:\Users\Pat
+WSL_USER_PROFILE="$(wslpath -u "$WIN_USER_PROFILE" | tr -d '\r\n')"         # /mnt/c/Users/Pat
+XAUTHORITY="$WSL_USER_PROFILE/.Xauthority"                                  # /mnt/c/Users/Pat/.Xauthority
+WIN_XAUTHORITY="$(wslpath -m "$XAUTHORITY" | tr -d '\r\n')"                 # C:\Users\Pat\.Xauthority
+export XAUTHORITY
+if [[ ! -f "$XAUTHORITY" ]] || ! xauth list "$DISPLAY" 2>/dev/null | grep -q MIT-MAGIC-COOKIE ; then
+    rm -f "$XAUTHORITY"
+    touch "$XAUTHORITY"
+    SECRET="$(xxd -l 16 -p /dev/urandom)"
+    xauth -f "$XAUTHORITY" add "$DISPLAY" . "$SECRET"
+fi
+
+
+# We must configure the VcXSrv X0.hosts file to include our IP address. In
+# order for this to work the file permissions must have already been changed
+# so that Administrator access is NOT required, which is done by setup.ps1.
+hostname -I | tee "$VCXSRV_DIR/X0.hosts" >/dev/null
+
+
+# Configuration change requires we restart VcXsrv
+"$SYS32DIR/taskkill.exe" -f -im vcxsrv.exe &>/dev/null
+
+
+# Make sure VcXsrv is running
+# Specifically, DO NOT USE -ac (disable access control)
+"$VCXSRV_EXE" -multiwindow -clipboard -wgl -auth "$WIN_XAUTHORITY" </dev/null &>/dev/null & disown
+
+
+WIN_USER_PROFILE=
+WSL_USER_PROFILE=
+WIN_XAUTHORITY=
+VCXSRV_DIR=
+VCXSRV_EXE=
+SYS32DIR=

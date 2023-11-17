@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+NAME="Bluecurve Revival XFCE orange"
+URL="https://dl.opendesktop.org/api/files/download/id/1542613902/s/87812b2ae84125c473896dc2d7bc16038b12ad9bab7e35990d15e4cdd76e63b8200bd436b1a9eccb79f0217d6ecd7e3bbe98464916e0d417506b2cca80bfeb0c/t/1552202118/u//Bluecurve_Revival_XFCE_orange.tar.gz"
+
+# Check installed
+if [[ -d "$HOME/.themes/$NAME" ]] ; then
+    echo "$NAME already installed"
+    exit 0
+fi
+
+# Make destination directory
+DESTINATION="$HOME/.themes"
+mkdir -p "$DESTINATION"
+
+# Install theme
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    ARCHIVE=$(basename "$URL")
+    cd "$MYTMPDIR"
+    wget "$URL" -O "$ARCHIVE"
+    tar -xzf "$ARCHIVE"
+    rm "$ARCHIVE"
+
+    if [[ -d "$NAME" ]]; then
+        mv "$NAME" "$DESTINATION"
+    else
+        echo >&2 "ERROR: archive does not contain folder '$NAME'"
+    fi
+)
+
+# Done
+echo "$NAME installed successfully"

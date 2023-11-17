@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# Delete local branches that have been merged into main branch
+#
+# Based on:
+# - https://stackoverflow.com/a/56026209
+# - https://stackoverflow.com/a/49434212
+set -euo pipefail
+
+# Save current branch
+curr_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# Switch to main branch to ensure we're not on a branch that should be deleted
+main_branch="$(basename "$(git symbolic-ref --short refs/remotes/origin/HEAD)")"
+git checkout -q "$main_branch"
+
+# Pull to ensure that we are at latest version, which means we're able to use
+# "git branch -d" instead of the more dangerous "git branch -D"
+git pull -q
+
+# Find branches that have been merged
+branches=()
+while read -r branch ; do
+    [[ "$main_branch" == "$branch" ]] && continue
+    merge_base=$(git merge-base "$main_branch" "$branch")
+    merge_source=$(git rev-parse "$branch")
+    [[ "$merge_base" == "$merge_source" ]] && branches+=("$branch")
+done < <(git for-each-ref refs/heads/ "--format=%(refname:short)")
+
+[[ "${#branches[@]}" == 0 ]] && printf >&2 '\nNo merged branches to delete...\n' && exit
+
+if [[ -z "${FORCE:-}" ]]; then
+    echo ''
+    echo 'Planning to delete these merged branches:'
+    echo ''
+    printf '%s\n' "${branches[@]}"
+    echo ''
+    printf 'Delete locally? Press [Enter] to continue...'
+    read -r _
+fi
+
+git branch -d "${branches[@]}"
+
+# Restore current branch
+git checkout -q "$curr_branch"

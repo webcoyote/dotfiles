@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Parse options
+eval set -- "$(getopt -o p:h --long package-name:,help -n "${BASH_SOURCE[0]}" -- "$@")"
+usage () {
+    echo "Usage:   ${BASH_SOURCE[0]} APP-NAME PPA-ADDRESS"
+    echo "Example: ${BASH_SOURCE[0]} krita ppa:kritalime/ppa"
+    echo "Install application via PPA (Personal Package Archive)"
+    echo ""
+    echo "Options:"
+    echo "  -p | --package-name     set package name (default => APP-NAME)"
+    echo "  -h | --help             show this help message"
+}
+PACKAGE_NAME=""
+while true ; do
+    case "$1" in
+        -p|--package-name) PACKAGE_NAME="$2" ; shift 2 ;;
+        -h|--help) usage ; exit 0 ;;
+        --) shift ; break ;;
+        *) echo >&2 "ERROR: Invalid option" ; exit 1 ;;
+    esac
+done
+
+# Get required arguments
+if [[ "$#" -ne 2 ]]; then
+    usage 1>&2
+    exit 1
+fi
+APP="$1"
+PPA="$2"
+PACKAGE_NAME="${PACKAGE_NAME:-$APP}"
+
+# Check installed
+if [[ -z "${FORCE:-}" ]]; then
+    if command -v "$APP" &> /dev/null ; then
+        echo "$APP already installed"
+        exit 0
+    fi
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install application
+sudo add-apt-repository -y "$PPA"
+sudo apt-get update
+sudo apt-get install -y "$PACKAGE_NAME"
+
+# Done
+echo "$APP installed successfully"

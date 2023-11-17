@@ -1,0 +1,8 @@
+#!/bin/bash
+set -euo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+
+# Find filenames without extensions and run shellcheck on them
+# SC1017 => Literal carriage return (ignore Windows line endings)
+find "$SCRIPT_DIR" -type f ! \( -name "*.*" -o -wholename "./.git/*" \) -print0 | xargs -0 shellcheck -a -e SC1017

@@ -1,0 +1,8 @@
+#!/bin/bash
+# Find files with no extension
+set -euo pipefail
+
+DIRECTORY="${1:-.}"
+shift || true
+find "$DIRECTORY" -not \( -type d -name ".git" -prune \) -type f ! -name "*.*" "$@"
+

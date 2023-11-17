@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Parse options
+eval set -- "$(getopt -o h --long help -n "${BASH_SOURCE[0]}" -- "$@")"
+usage () {
+    echo "Usage:   ${BASH_SOURCE[0]} APP-NAME URL"
+    echo "Example: ${BASH_SOURCE[0]} emacs http://mirrors.syringanetworks.net/gnu/emacs/emacs-26.1.tar.gz"
+    echo "Install application via source (make / sudo make install)"
+    echo ""
+    echo "Options:"
+    echo "  -h | --help         show this help message"
+}
+while true ; do
+    case "$1" in
+        -h|--help) usage ; exit 0 ;;
+        --) shift ; break ;;
+        *) echo >&2 "ERROR: Invalid option" ; exit 1 ;;
+    esac
+done
+
+# Get required arguments
+if [[ "$#" -ne 2 ]]; then
+    usage 1>&2
+    exit 1
+fi
+APP="$1"
+URL="$2"
+
+# Check installed
+if [[ -z "${FORCE:-}" ]]; then
+    if command -v "$APP" &> /dev/null ; then
+        echo "$APP already installed"
+        exit 0
+    fi
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+# MYTMPDIR="/tmp/debug-install" ; mkdir -p "$MYTMPDIR"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    # Download
+    cd "$MYTMPDIR"
+    NAME=$(basename "$URL")
+    if [[ ! -f "$NAME" ]]; then
+        wget "$URL"
+    fi
+
+    # Unpack and change into directory (excluding ".tar.gz")
+    tar -xzf "$NAME"
+    cd "${NAME%.tar.gz}"
+    
+    # Make
+    ./configure
+    make
+    sudo make install
+)
+
+# Done
+echo "$APP installed successfully"

@@ -1,0 +1,88 @@
+#!/bin/bash
+# batch file runner for Windows
+#
+# c foo\\bar\\batchfile.bat ARG1 ARG2 ==> runs batch file using cmd.exe with specified arguments
+# c foo\\bar\\program.exe ARG1 ARG2 ==> runs program.exe with specified arguments
+#
+set -e          # crash on errors
+set -u          # crash on undefined variables
+set -o pipefail # crash when intermediate program in pipe fails
+
+if [ "$#" -lt 1 ]; then
+  echo "Runs a Windows batch file (.bat/.cmd/.ps1) or executable (.exe/.com/.msi/etc) from within bash"
+  echo "Usage: $(basename "${BASH_SOURCE[0]}") BATCH-FILE-NAME  [ARGUMENT ...]"
+  exit
+fi
+
+# https://stackoverflow.com/a/45391938
+_convertMountPath() {
+    # only convert path with "/" mount that do not match drive mounts
+    # ex: for mounts, /, and drive mounts /c and /d,
+    #     do not convert paths /c, /c/, /d, /d/
+    #     but convert paths /m, /etc, /cc, /dd
+    #     as converting drive mount path is handled by _convertPosixPath
+    path="$*"
+    # bust out if path does not match /*
+    if grep -E -q -v "^/" <<< "$path"; then
+        echo "$path"
+        return
+    fi
+    # concat all drive mounts
+    drives=$(df -h --output=target | grep "^/." | paste -sd'/' | sed 's,/,,g')
+    # c drive is not mounted so add it
+    drives="c$drives"
+    # bust out if path matches drive patterns, /d/* /d /d:*
+    if grep -E -q -i "^/[$drives](/|$|:)" <<< "$path"; then
+        echo "$path"
+        return
+    fi
+    # / mount if here
+    rootpath=$(df -h --output=target,source | grep "^/[^a-z]" | sed -r 's:/ +::')
+    # shellcheck disable=SC2001 # too lazy to convert sed to bash search/replace
+    path=$(sed 's,^,'"$rootpath"',' <<< "$path")
+    echo "$path"
+}
+
+_convertPosixPath() {
+    # convert /c/ to /c:/ to c:/ to c:\
+    #   drive letter can be multiple chars
+    # convert some/dir/ to some\dir\
+    #
+    # see Patterns, http://www.grymoire.com/Unix/Sed.html#uh-27
+    # example: sed '\,^#, s/[0-9][0-9]*//'
+    sed -r '
+        # remove leading "
+        s,^",,
+        # remove trailing "
+        s,"$,,
+        # ensure 2nd / is present at end for special case "/c"
+        \,^/[^/]+$, s,$,/,
+        # if starting with / and no :/, replace the 2nd / with :/
+        \,^/[^:]+/, s,/,:/,2
+        # remove leading forward-slash
+        s,^/,,
+        # replace all forward-slash with backslash
+        s,/,\\,g
+        ' <<< "$@"
+}
+
+convertPosixPathToWindows() {
+    path="$*"
+    path=$(_convertMountPath "$path")
+    path=$(_convertPosixPath "$path")
+    echo "$path"
+}
+
+COMMAND="$(convertPosixPathToWindows "$1")"
+shift
+
+if [[ "$COMMAND" == *.bat ]] || [[ "$COMMAND" == *.cmd ]]; then
+  # Run $COMMAND as a batch file
+  # '/q' is before '/c' so it fakes out "pause-in-explorer.bat"
+  exec cmd.exe //q //c "$COMMAND" "$@"
+elif [[ "$COMMAND" == *.ps1 ]]; then
+  exec powershell.exe -NoLogo -File "$COMMAND" "$@"
+else
+  # Run $COMMAND directly
+  exec "$COMMAND" "$@"
+fi

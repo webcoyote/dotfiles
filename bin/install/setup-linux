@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+
+warn () {
+  echo >&2 -e "\033[33m$*\033[0m"
+}
+
+readonly PACKAGES=(
+    apt-file                # what files does an apt-package include?
+    at                      # run command at time
+    cargo                   # rust package manager
+    curl                    # get data from URL
+    default-jre             # java
+    dos2unix                # fix linefeeds
+    fd-find                 # "fd" tool
+    git gitk git-lfs tig    # git
+    gnupg gnupg2            # encryption & signing
+    hexer                   # vi-like hex-editor with insertion!
+    inotify-tools           # inotifywait file monitor
+    jq                      # command-line JSON processor
+    libnotify-bin           # notify-send command
+    moreutils               # https://joeyh.name/code/moreutils/
+    nodejs npm              # node.js and package manager
+    net-tools               # netstat/ifconfig tools
+    remake                  # make-wrapper: show makefile tasks; debug makefiles
+    ripgrep                 # even faster/better grep
+    vim                     # better than vi
+    unzip                   # really, I have to install this? apparently yes!
+    wget                    # get data from URL
+    xdg-utils               # xdg-open
+    xsel                    # copy/paste from terminal
+)
+
+# For non-WSL systems add additional utilies
+if [[ ! $(uname -r) =~ icrosoft ]]; then
+    PACKAGES+=(autorandr)               # automatically set monitor configuration
+    PACKAGES+=(ecryptfs-utils)          # encrypt private files at rest
+    PACKAGES+=(meld)                    # diff utility
+    PACKAGES+=(redshift)                # dim screen at night
+    PACKAGES+=(wmctrl)                  # manipulate windows from terminal
+    PACKAGES+=(xdotool)                 # manipulate windows from terminal
+    PACKAGES+=(vlc)                     # better media player
+    PACKAGES+=(xtrlock)                 # better screen locker than light-locker
+fi
+
+# On Ubuntu-based systems...
+if command -v apt &>/dev/null ; then
+    # Get password for later commands
+    sudo -p "sudo required for setup; enter password: " true
+
+    sudo apt update
+
+    # Install applications
+    sudo DEBIAN_FRONTEND=noninteractive apt install -y "${PACKAGES[@]}"
+
+    # Disable pactl and x11-utils on WSL; they cause slow startup!
+    if [[ $(uname -r) =~ icrosoft ]]; then
+        sudo DEBIAN_FRONTEND=noninteractive apt remove -y pulseaudio-utils x11-utils x11-apps
+    fi
+
+    # Light-locker doesn't always successfully lock the system after resume; use xtrlock instead
+    if [[ -x "light-locker" ]]; then
+        sudo DEBIAN_FRONTEND=noninteractive apt remove -y light-locker
+    fi
+
+    # Install xtrlock into xflock4 before other screen-savers
+    if [[ -f "/usr/bin/xflock4" ]]; then
+        if ! grep "xtrlock" "/usr/bin/xflock4" &> /dev/null ; then
+            sudo sed -i '/export PATH/a\\n# patw added\nxtrlock -b && exit' "/usr/bin/xflock4"
+        fi
+    fi
+
+    # Create link for fd-find
+    ln -sf "$(which fdfind)" "$HOME/bin/fd"
+
+    # Is autorandr configured?
+    if [[ ! -d "$HOME/.config/autorandr" ]]; then
+        # Not for Windows Linux Subsystem (WSL): WSL1 ("Microsoft") or WSL2 ("microsoft")
+        if [[ ! $(uname -r) =~ icrosoft ]]; then
+            warn "SUGGESTION: run autorandr to configure your display settings"
+        fi
+    fi
+
+    # Turn off "access time" for files
+    if ! grep ext4 /etc/fstab | grep "noatime,nodiratime" &>/dev/null ; then
+        warn "SUGGESTION: set 'defaults,noatime,nodiratime' for ext4 in /etc/fstab"
+    fi
+fi
+
+# Set the node package manager directory to be in a location that
+# does not require administrative permissions for package install
+if command -v npm &>/dev/null ; then
+    mkdir -p "$HOME/.npm/node"
+    npm config set prefix="$HOME/.npm/node"
+fi
+
+# Install fzf: fuzzy file/history/directory searcher
+"$SCRIPT_DIR/fzf-install" || true
+
+# Install pbcopy/pbpaste/bringtofront/tnet, etc.
+"$SCRIPT_DIR/pbutils-install" || true
+"$SCRIPT_DIR/ripgrep-install" || true
+"$SCRIPT_DIR/fd-install" || true
+"$SCRIPT_DIR/github-cli-install" || true
+"$SCRIPT_DIR/jc-install" || true
+# cargo install jless || true
+
+# Install starship command prompt
+command -v starship >/dev/null || sh -c "$(curl -fsSL https://starship.rs/install.sh --yes)"
+
+# Install atuin command history
+command -v atuin &>/dev/null || bash <(curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh)
+
+cargo install du-dust   # dust (replaces du)
+#cargo install exa       # bat (replaces cat)
+#cargo install procs     # procs (replaces ps) -- needs more modern Rust
+#cargo install sd        # sd (replaces sed)  -- needs more modern Rust
+
+# Used to use this code to avoid having conflicts between linux and {Windows git-bash, Gnu-on-Windows ("gow")}.
+# Instead this problem is now fixed by doing OS discovery in `~/.profile` and removing undesirable paths.
+#
+# Remove Windows applications from the WSL path
+# if [[ $(uname -r) =~ icrosoft ]]; then
+#     if command -v cmd.exe &>/dev/null ; then
+#         # Method 1
+#         # This only worked in WSL1
+#         # reg.exe add 'HKCU\Software\Microsoft\Windows\CurrentVersion\Lxss' -v AppendNtPath -t REG_DWORD -d 0 -f
+#
+#         # Method 2
+#         # This works, but requires administrative permissions, and changes ALL WSL distributions
+#         # https://github.com/Microsoft/WSL/issues/2048
+#         # warn "SUGGESTION: Windows directories are included in PATH. Run this command as Administrator and restart WSL:"
+#         # warn 'reg.exe add "HKLM\SYSTEM\CurrentControlSet\Services\LxssManager" -f -v DistributionFlags -t REG_DWORD -d 0xfffffffd'
+#
+#         # Method 3
+#         # https://github.com/MicrosoftDocs/WSL/blob/live/WSL/release-notes.md#build-17713
+#         sudo bash -c "echo -e '\n[interop]\nappendWindowsPath=false\n' >> /etc/wsl.conf"
+#         warn "WARNING: Windows directories are included in PATH. This has been disabled, but you need to restart WSL"
+#     fi
+# fi

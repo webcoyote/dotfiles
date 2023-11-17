@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+APP="bk"
+OUTFILE="$HOME/bin/$APP"
+OUTFILE2="$HOME/bin/buildkite-agent"
+RELEASES_URL="https://api.github.com/repos/buildkite/cli/releases/latest"
+
+# Check installed
+if [[ -z "${FORCE:-}" ]]; then
+    if command -v "$APP" &> /dev/null ; then
+        echo "$APP already installed"
+        exit 0
+    fi
+fi
+
+# Check platform
+case "$OSTYPE" in
+    linux*)
+        APP_NAME="cli-linux-amd64"
+    ;;
+    *)
+        echo >&2 "ERROR: install not implemented for $OSTYPE"
+        exit 1
+    ;;
+esac
+
+URL="$(curl -sL "$RELEASES_URL" | jq -r '.assets[].browser_download_url' | grep "$APP_NAME" || true)"
+if [[ -z "$URL" ]]; then
+    echo >&2 "ERROR: $APP_NAME not found in repository"
+    exit 1
+fi
+
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    # Download
+    # inspired by: https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8#gistcomment-2724872
+    cd "$MYTMPDIR"
+    TMPNAME="$(basename "$URL")"
+    curl -sSL "$URL" -o "$TMPNAME"
+
+    # Install
+    mkdir -p "$(dirname "$OUTFILE")"
+    chmod +x "$TMPNAME"
+    cp "$TMPNAME" "$OUTFILE"
+    cp "$TMPNAME" "$OUTFILE2"
+)
+
+"$OUTFILE" configure buildkite
+"$OUTFILE" configure github
+
+# Done
+echo "$APP installed successfully"

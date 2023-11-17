@@ -1,0 +1,12 @@
+{
+	"ensure_newline_at_eof_on_save": false,
+	"font_size": 22,
+	"ignored_packages":
+	[
+	],
+	"theme": "Default.sublime-theme",
+	"translate_tabs_to_spaces": true,
+	"trim_trailing_white_space_on_save": true,
+	"update_check": false,
+	"vintage_start_in_command_mode": true
+}

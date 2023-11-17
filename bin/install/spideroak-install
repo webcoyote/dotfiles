@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
+APP="SpiderOakONE"
+URL="https://spideroak.com/release/spideroak/deb_x64"
+
+# Check installed
+if command -v "$APP" &> /dev/null ; then
+    echo "$APP already installed"
+    exit 0
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    cd "$MYTMPDIR"
+    wget "$URL" -O "./$APP.deb"
+    sudo apt install -fy "./$APP.deb"
+)
+
+# Done
+echo "$APP installed successfully"

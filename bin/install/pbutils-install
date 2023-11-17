@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Configuration
+URL="https://github.com/webcoyote/pbutils/releases/latest/download/pbutils.zip"
+
+# Check installed
+if [[ -z "${FORCE:-}" ]]; then
+    if  command -v "pbcopy.exe"         &> /dev/null &&
+        command -v "pbpaste.exe"        &> /dev/null &&
+        command -v "bringtofront.exe"   &> /dev/null
+    then
+        echo "pbutils already installed"
+        exit 0
+    fi
+fi
+
+
+# Install application
+#MYTMPDIR="/tmp/debug-install" ; mkdir -p "$MYTMPDIR"
+MYTMPDIR="$(mktemp -d)" && trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    # Download
+    cd "$MYTMPDIR"
+    NAME=$(basename "$URL")
+    if [[ ! -f "$NAME" ]]; then
+        curl -sSLO "$URL"
+    fi
+
+    mkdir -p "$MYTMPDIR/temp"
+    unzip -o "$NAME" -d "$MYTMPDIR/temp"
+    chmod +x "$MYTMPDIR/temp"/*.exe
+
+    # Install utilities
+    mkdir -p "$HOME/bin"
+    cp "$MYTMPDIR/temp"/* -d "$HOME/bin"
+)
+
+# Done
+echo "pbutils installed successfully"

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  exec sudo -p "Restarting with sudo; enter password: " /usr/bin/env bash "$0" "$@"
+fi
+
+systemctl stop cups-browsed || true
+systemctl disable cups-browsed || true
+systemctl is-enabled cups-browsed || true
+systemctl is-active cups-browsed || true

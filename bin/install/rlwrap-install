@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP="rlwrap"
+URL="https://github.com/hanslub42/rlwrap"
+
+# Check installed
+if command -v "$APP" &> /dev/null ; then
+    echo "$APP already installed"
+    exit 0
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install required tools
+if ! command -v autoreconf &> /dev/null ; then
+	sudo apt install -y autoconf
+fi
+if ! dpkg -s "libreadline-dev" &> /dev/null ; then
+	sudo apt install -y libreadline-dev
+fi
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    cd "$MYTMPDIR"
+    git clone "$URL"
+    cd "$(basename "$URL")"
+    autoreconf --install
+    ./configure
+    make
+    sudo make install
+)
+
+# Done
+echo "$APP installed successfully"

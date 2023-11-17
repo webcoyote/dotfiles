@@ -1,0 +1,14 @@
+{
+	"font_size": 30,
+	"ignored_packages":
+	[
+		""
+	],
+	"rulers":
+	[
+		50
+	],
+	"tab_size": 4,
+	"translate_tabs_to_spaces": true,
+	"vintage_start_in_command_mode": true
+}

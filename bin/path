@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+
+# for path in "$(echo $PATH | tr : \\n)" ; do
+export IFS=":"
+for path in $PATH; do
+  if [[ -d "$path" ]]; then
+    EXISTS=1
+  else
+    EXISTS=0
+  fi
+  echo "$EXISTS: $path"
+done

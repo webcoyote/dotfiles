@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [[ "$(uname -n)" == "xfatpad" ]]; then
+
+    xrandr --output LVDS-0 --off
+
+elif [[ "$(uname -n)" == "xthinpad" ]]; then
+    # If HDMI is connected
+    if grep -Fxq "connected" "/sys/class/drm/card0-HDMI-A-1/status" ; then
+        # Turn off the laptop screen
+        xrandr --output eDP-1 --off
+        
+        # Turn on the big monitor at highest resolution
+        xrandr --size 3840x1600
+    fi
+fi

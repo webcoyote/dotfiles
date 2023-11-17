@@ -1,0 +1,6 @@
+#!/bin/bash
+perl -e 'local $/; print unpack "H*", <>' "$1"
+echo
+perl -e 'local $/; print unpack "A*", <>' "$1"
+echo
+

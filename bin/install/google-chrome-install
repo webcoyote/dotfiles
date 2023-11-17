@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+APP="google-chrome"
+URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+exec "$SCRIPT_DIR/_install-via-package" "$APP" "$URL"

@@ -1,0 +1,4 @@
+[diff]
+    tool = vscode
+[merge]
+    tool = vscode

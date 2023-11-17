@@ -1,0 +1,10 @@
+source ~/.vimrc
+set backspace=indent,eol,start
+set expandtab     " Expand tabs to the proper type and size
+set tabstop=4     " Tabs width in spaces
+set softtabstop=4 " Soft tab width in spaces
+set shiftwidth=4  " Amount of spaces when shifting
+
+"set scrolloff=999   " Keep the cursor centered in the screen
+set scrolloff=5     " Keep the cursor away from the edge of the screen
+

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "$HOME/.config"
+if [[ ! -d "fzf" ]]; then
+    git clone "https://github.com/junegunn/fzf"
+    cd "fzf"
+else
+    cd "fzf"
+    git pull
+fi
+
+./install --all

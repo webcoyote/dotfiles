@@ -1,0 +1,18 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"AlignTab",
+		"AutoBackups",
+		"MarkdownPreview",
+		"Package Control",
+		"PowerShell",
+		"Pretty JSON",
+		"Terraform",
+		"Text Pastry",
+		"TypeScript"
+	]
+}

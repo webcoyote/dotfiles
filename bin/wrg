@@ -1,0 +1,8 @@
+#!/bin/bash
+# Run "rg" program with "filenames only" flag and make
+# it return unix-tool-friendly paths even in Git-Bash
+if [[ "$OSTYPE" == "msys" ]]; then
+    rg "$@" --files-with-matches --null | xargs --no-run-if-empty -0 cygpath -u | tr '\n' '\0'
+else
+    exec rg "$@" --files-with-matches --null
+fi

@@ -1,0 +1,20 @@
+# https://starship.rs/config
+
+scan_timeout=10
+command_timeout=50
+
+[aws]
+disabled = true
+
+[status]
+disabled = false
+
+[cmd_duration]
+disabled = false
+
+[directory]
+truncation_length = 5
+truncate_to_repo = false
+
+[nix_shell]
+disabled = true

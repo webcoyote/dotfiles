@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Parse options
+eval set -- "$(getopt -o h --long help -n "${BASH_SOURCE[0]}" -- "$@")"
+usage () {
+    echo "Usage:   ${BASH_SOURCE[0]} APP URL"
+    echo "Example: ${BASH_SOURCE[0]} foo https://foo.com/files/foo.appimage"
+    echo "Install application via appimage URL"
+    echo ""
+    echo "Options:"
+    echo "  -h | --help             show this help message"
+}
+while true ; do
+    case "$1" in
+        -h|--help) usage ; exit 0 ;;
+        --) shift ; break ;;
+        *) echo >&2 "ERROR: Invalid option" ; exit 1 ;;
+    esac
+done
+
+# Get required arguments
+if [[ "$#" -ne 2 ]]; then
+    usage 1>&2
+    exit 1
+fi
+APP="$1"
+URL="$2"
+
+# Check installed
+SHIM_PATH="/usr/local/bin/$APP"
+INSTALL_PATH="/opt/$APP/$APP"
+if [[ -z "${FORCE:-}" ]]; then
+    if [[ -x "$SHIM_PATH" ]] ; then
+        echo "$APP already installed"
+        exit 0
+    fi
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Defining HEREDOCS "almost just like" Ruby
+# http://ss64.com/bash/read.html
+# http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+# Example:
+# heredoc MESSAGE << EOF
+#    your favorite text here
+# EOF
+heredoc(){ IFS=$'\n' read -r -d '' "${1}" || true; }
+
+heredoc SHIM << EOF
+#!/usr/bin/env bash
+"$INSTALL_PATH" "\$@" </dev/null &>/dev/null & disown
+EOF
+
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    cd "$MYTMPDIR"
+
+    sudo mkdir -p "$(dirname "$SHIM_PATH")"
+    sudo mkdir -p "$(dirname "$INSTALL_PATH")"
+
+    wget "$URL" -O "./app"
+    echo "$SHIM" > "./shim"
+
+    chmod +x "./app"
+    chmod +x "./shim"
+
+    sudo mv -f "./app"  "$INSTALL_PATH"
+    sudo mv -f "./shim" "$SHIM_PATH"
+)
+
+# Done
+echo "$APP installed successfully"

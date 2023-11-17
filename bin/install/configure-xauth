@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
+if [[ $(uname -r) =~ icrosoft ]]; then
+    MY_OSTYPE="wsl"
+else
+    MY_OSTYPE="$OSTYPE"
+fi
+
+case "$MY_OSTYPE" in
+    darwin*)
+        if ! command -v xauth &>/dev/null ; then
+            echo >&2 "ERROR: xauth not installed"
+            exit 1
+        fi
+    ;;
+
+    wsl*|linux*)
+        if ! command -v xauth &>/dev/null ; then
+            sudo apt install -y xserver-xorg
+        fi
+    ;;
+
+    msys*|cygwin*)
+        # xauth on Windows generates errors related to display name
+        echo >&2 "ERROR: Run this script in WSL to create the .Xauthority file in Windows and WSL"
+        exit 1
+
+        #XAUTH="/c/Program Files/VcXsrv/xauth.exe"
+        #if ! command -v "$XAUTH" &>/dev/null; then
+        #    echo >&2 "ERROR: VcXsrv not installed"
+        #    exit 1
+        #fi
+    ;;
+
+    *)
+        echo "Unknown OS: $OSTYPE"
+        exit 1
+    ;;
+esac
+
+# Create the .Xauthority file with a random key
+rm "$HOME/.Xauthority"
+touch "$HOME/.Xauthority"
+xauth add "$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0" . "$(xxd -l 16 -p /dev/urandom)"
+
+
+# Copy from WSL to Windows
+case "$MY_OSTYPE" in
+    wsl*)
+        cp "$HOME/.Xauthority" "/mnt/c/Users/$USER/"
+    ;;
+esac
+

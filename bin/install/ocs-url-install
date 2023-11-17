@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+APP="ocs-url"
+URL="https://dl.opendesktop.org/api/files/download/id/1530774600/s/1768250762cbc64986c3b76b0179dd4566d2a07239be2ba9e743fa0292386bec806bf6d3555e183706d37b1ba2985351085e6c9b340682fcc8fd47bf7a87d5be/t/1552158841/u//ocs-url_3.1.0-0ubuntu1_amd64.deb"
+
+exec "$SCRIPT_DIR/_install-via-package" "$APP" "$URL"

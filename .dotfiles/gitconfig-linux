@@ -1,0 +1,4 @@
+[diff]
+    tool = /usr/bin/meld
+[merge]
+    tool = /usr/bin/meld

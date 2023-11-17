@@ -1,0 +1,11 @@
+{
+	// Don't make changes to this file directly as they can get wiped out when the
+	// plugin is updated. Instead transfer what you need to the 'Settings - User' file.
+
+	// The directory where we'll keep our backups. If empty, we'll try to put them in
+	// D:/Sublime Text Backups
+	"backup_dir": "c:/Users/Pat/.backup",
+
+	// If true, also save a backup copy any time a file is opened (if backup file not exists)
+	"backup_on_open_file": false
+}

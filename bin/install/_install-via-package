@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Parse options
+eval set -- "$(getopt -o h --long help -n "${BASH_SOURCE[0]}" -- "$@")"
+usage () {
+    echo "Usage:   ${BASH_SOURCE[0]} APP-NAME URL"
+    echo "Example: ${BASH_SOURCE[0]} foo https://foo.com/files/foo.deb"
+    echo "Install application via package URL"
+    echo ""
+    echo "Options:"
+    echo "  -h | --help             show this help message"
+}
+while true ; do
+    case "$1" in
+        -h|--help) usage ; exit 0 ;;
+        --) shift ; break ;;
+        *) echo >&2 "ERROR: Invalid option" ; exit 1 ;;
+    esac
+done
+
+# Get required arguments
+if [[ "$#" -ne 2 ]]; then
+    usage 1>&2
+    exit 1
+fi
+APP="$1"
+URL="$2"
+
+# Check installed
+if [[ -z "${FORCE:-}" ]]; then
+    if command -v "$APP" &> /dev/null ; then
+        echo "$APP already installed"
+        exit 0
+    fi
+fi
+
+# Check if this platform uses "apt"
+if ! command -v apt &> /dev/null ; then
+    echo >&2 "ERROR: I don't know how to install '$APP' for this platform using packages"
+    exit 1
+fi
+
+# Require sudo
+if [ "$(id -u)" -ne 0 ]; then
+  sudo -p "sudo required; enter password: " true
+fi
+
+# Install application
+MYTMPDIR="$(mktemp -d)"
+trap 'rm -rf "$MYTMPDIR"' EXIT
+(
+    cd "$MYTMPDIR"
+    wget "$URL" -O "./$APP.deb"
+    sudo apt install -fy "./$APP.deb"
+)
+
+# Done
+echo "$APP installed successfully"

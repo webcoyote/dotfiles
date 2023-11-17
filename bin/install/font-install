@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+
+# Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
+if [[ $(uname -r) =~ icrosoft ]]; then
+    MY_OSTYPE="wsl"
+else
+    MY_OSTYPE="$OSTYPE"
+fi
+
+case "$MY_OSTYPE" in
+    linux*)
+        FONT_DIR="$HOME/.local/share/fonts"
+        mkdir -p "$FONT_DIR"
+        curl -sSLo "$FONT_DIR/Bitstream Vera Sans Mono Nerd Font Complete Mono.ttf" "https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/BitstreamVeraSansMono/Regular/complete/Bitstream%20Vera%20Sans%20Mono%20Nerd%20Font%20Complete%20Mono.ttf"
+        fc-cache -vf "$FONT_DIR"
+    ;;
+
+    wsl*)
+        # Command execute cmd.exe with UNC path, so we could copy the scripts
+        # we need to Windows, or we could just do this:
+        echo >&2 "ERROR: you'll need to run this from git-bash (or font-install.bat from cmd.exe)"
+        exit 1
+    ;;
+
+    msys*|cygwin*)
+        # Run a Windows batch script of the same name as this bash file
+        exec cmd.exe //q //c "$SCRIPT_DIR/$(basename "${BASH_SOURCE[0]}").bat" "$@"
+    ;;
+
+    *)
+        echo "Unknown OS: $OSTYPE"
+        exit 1
+    ;;
+esac

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# This script runs FireFox with the specified
+# PROFILE, or it can create a new one. Very
+# useful for testing with a "vanilla" browser.
+set -euo pipefail
+
+
+# Use the command-line argument, if it exists,
+# otherwise fall back to the environment variable
+PROFILE="${1:-${PROFILE:-}}"
+
+if [[ -z "${PROFILE:-}" ]]; then
+    echo >&2 "Creating temporary profile for FireFox"
+    PROFILE=$(mktemp -d)
+elif [[ "$(basename "$PROFILE")" == "$PROFILE" ]]; then
+    echo >&2 "Using profile '$PROFILE' for FireFox"
+    PROFILE="$HOME/.mozilla/extra-profiles/$PROFILE"
+    mkdir -p "$PROFILE"
+else
+    echo >&2 "ERROR: PROFILE variable must be a name, not a path"
+    exit 1
+fi
+
+firefox --new-instance --profile "$PROFILE" </dev/null &>/dev/null & disown

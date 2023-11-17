@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+if [[ "$#" -ne 1 ]]; then
+    echo "what-provides: a tool to locate missing files in packages"
+    echo "Usage:   ${BASH_SOURCE[0]} filename"
+    echo "Example: ${BASH_SOURCE[0]} FindKDE4Internal.cmake"
+    exit
+fi
+
+if ! command -v "apt" &>/dev/null ; then
+    echo >&2 "ERROR: OS not supported"
+    exit 1
+fi  
+
+if ! command -v "apt-file" &>/dev/null ; then
+    sudo -p "sudo required; enter password: " apt install -y apt-file
+fi
+
+# Search packages for the file
+apt-file search "$1"

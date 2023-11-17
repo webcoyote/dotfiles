@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Patrick's Airpods
+DEVICE="FC:B6:D8:D6:98:33"
+
+# Parse options
+eval set -- "$(getopt -o d:h --long device:,help -n "${BASH_SOURCE[0]}" -- "$@")"
+usage () {
+    echo "Usage:   ${BASH_SOURCE[0]} [OPTIONS] [DEVICE] [on|off]"
+    echo "Enable/disable bluetooth device"
+    echo ""
+    echo "Options:"
+    echo "  -h | --help                 show this help message"
+    echo "  -d | --device=MAC-ADDRESS   set device id (default=$DEVICE)"
+}
+while true ; do
+    case "$1" in
+        -h|--help) usage ; exit 0 ;;
+        -d|--device) DEVICE="$2" ; shift 2 ;;
+        --) shift ; break ;;
+        *) echo >&2 "ERROR: Invalid option" ; exit 1 ;;
+    esac
+done
+
+# Check options arguments
+if [[ "$#" -gt 2 ]]; then
+    usage 1>&2
+    exit 1
+fi
+
+# Check installed
+if ! command -v bluetoothctl &> /dev/null ; then
+    if [ "$(id -u)" -ne 0 ]; then
+        sudo -p "sudo required; enter password: " sudo apt install -y bluez
+    fi
+fi
+
+# Defining HEREDOCS "almost just like" Ruby
+# http://ss64.com/bash/read.html
+# http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+# Example:
+# heredoc MESSAGE << EOF
+#    your favorite text here
+# EOF
+heredoc(){ IFS=$'\n' read -r -d '' "${1}" || true; }
+
+heredoc DISABLE <<EOF
+    disconnect "$DEVICE"
+    quit
+EOF
+heredoc ENABLE <<EOF
+    power on
+    pair "$DEVICE"
+    trust "$DEVICE"
+    connect "$DEVICE"
+    quit
+EOF
+
+if [[ "$#" -eq 1 ]] && [[ "$1" == "off" ]]; then
+    echo "$DISABLE" | bluetoothctl &>/dev/null
+else
+    echo "$ENABLE"  | bluetoothctl &>/dev/null
+fi

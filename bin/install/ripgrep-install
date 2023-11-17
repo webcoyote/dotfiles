@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly RELEASES_URL="https://api.github.com/repos/BurntSushi/ripgrep/releases/latest"
+
+APP="rg"
+if command -v apt &> /dev/null ; then
+    # inspired by: https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8#gistcomment-2724872
+    URL=$(curl -sL "$RELEASES_URL" | jq -r '.assets[].browser_download_url' | grep "amd64.deb")
+    exec "$SCRIPT_DIR/_install-via-package" "$APP" "$URL"
+elif [[ "$OSTYPE" == "msys" ]] ; then
+    if command -v scoop &> /dev/null ; then
+        scoop update rg
+    else
+        echo >&2 "ERROR: scoop not installed"
+    fi
+fi

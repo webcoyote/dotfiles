@@ -1,0 +1,7 @@
+#!/bin/bash
+# Run "fd" program, but always return Unix paths, even in Git-Bash
+if [[ "$OSTYPE" == "msys" ]]; then
+    fd "$@" --print0 | xargs --no-run-if-empty -0 cygpath -u | tr '\n' '\0'
+else
+    exec fd "$@" --print0
+fi

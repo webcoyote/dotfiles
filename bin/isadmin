@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+function isadmin() {
+    case "$OSTYPE" in
+        msys*|cygwin*)
+            net session &>/dev/null
+            if [[ $? -ne 0 ]]; then
+                return 1 # user
+            else
+                return 0 # admin
+            fi
+        ;;
+
+        *)
+            if [[ $(id -u) -ne 0 ]]; then
+                return 1 # user
+            else
+                return 0 # admin
+            fi
+        ;;
+    esac
+}
+
+if isadmin ; then
+    echo "Administrator"
+else
+    echo "User"
+fi

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+readonly SCRIPT_DIR
+readonly RELEASES_URL="https://api.github.com/repos/cli/cli/releases/latest"
+
+APP="gh"
+if command -v apt &> /dev/null ; then
+    # inspired by: https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8#gistcomment-2724872
+    URL=$(curl -sL "$RELEASES_URL" | jq -r '.assets[].browser_download_url' | grep "linux_amd64.deb")
+    exec "$SCRIPT_DIR/_install-via-package" "$APP" "$URL"
+elif command -v scoop &> /dev/null ; then
+    scoop update gh
+# elif [[ "$OSTYPE" == "msys" ]]; then
+#     # inspired by: https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8#gistcomment-2724872
+#     URL=$(curl -sL "$RELEASES_URL" | jq -r '.assets[].browser_download_url' | grep "windows_amd64.msi")
+#     exec "$SCRIPT_DIR/_install-via-executable" "$APP" "$URL"
+fi
+
+# Use SSH protocol instead of HTTPS to avoid "Username/Password" prompts
+gh config set git_protocol ssh -h github.com

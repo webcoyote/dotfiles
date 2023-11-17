@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+APP="mcfly.bash"
+URL="https://github.com/cantino/mcfly/releases/download/v0.3.4/mcfly-v0.3.4-x86_64-unknown-linux-gnu.tar.gz"
+
+exec "$SCRIPT_DIR/_install-via-archive" "$APP" "$URL"

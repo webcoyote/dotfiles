@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Forward notifications to the host machine's native notifier
+# I should get a medal for this hot mess...
+set -euo pipefail
+readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Strictly check arguments to avoid errors since we're using
+# different notifiers on different platforms.
+if [[ "$#" -ne 2 ]]; then
+    echo >&2 "ERROR: incorrect usage"
+    echo >&2 "USAGE: $(basename "${BASH_SOURCE[0]}") TITLE BODY"
+    exit 1
+fi
+
+# Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
+if [[ $(uname -r) =~ icrosoft ]]; then
+    MY_OSTYPE="wsl"
+else
+    MY_OSTYPE="$OSTYPE"
+fi
+
+case "$MY_OSTYPE" in
+    darwin*)
+        terminal-notifier -title "$1" -message "$2"
+    ;;
+
+    linux*)
+        notify-send "$1" "$2"
+    ;;
+
+    wsl*|msys*|cygwin*)
+        # If possible use growl; it's better than the Winblows
+        # notification system, which only allows one message at
+        # a time, wheres growl is configurable by the user.
+        #
+        # Install growl using https://github.com/PlayOneMoreGame/computer-setup
+        GROWL="/c/Program Files (x86)/Growl for Windows/growlnotify.com"
+        if [[ -x "$GROWL" ]]; then
+            # git-bash: use // to escape
+            exec "$GROWL" "//a:${GROWL_APP:-OMG}" "//n:${GROWL_TYPE:-Info}" "//t:$1" "$2"
+        fi
+        GROWL="/mnt/c/Program Files (x86)/Growl for Windows/growlnotify.com"
+        if [[ -x "$GROWL" ]]; then
+            # WSL: use \/ to escape
+            # shellcheck disable=SC1001
+            exec "$GROWL" \/a:"${GROWL_APP:-OMG}" \/n:"${GROWL_TYPE:-Info}" \/t:"$1" "$2"
+        fi
+
+        # Calling powershell "$@" does not work because the arguments
+        # are single-quoted by bash. This is an expedient solution
+        # that mostly works, though it does not work for single-quoted
+        # strings with double-quotes inside (ex: 'd "e" f').
+        ARGS=
+        for i in "$@"; do 
+            i="${i//\\/\\\\}"
+            # shellcheck disable=SC2089
+            ARGS="$ARGS \"${i//\"/\\\"}\""
+        done
+        # shellcheck disable=SC2090,SC2086
+        powershell.exe "$SCRIPT_DIR/notify-toasty.ps1" $ARGS
+    ;;
+  
+    *)
+        echo >&2 "Unknown OS: $MY_OSTYPE"
+        exit 1
+    ;;
+esac

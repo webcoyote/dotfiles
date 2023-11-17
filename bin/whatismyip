@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+curl -s http://whatismyip.akamai.com
+echo
