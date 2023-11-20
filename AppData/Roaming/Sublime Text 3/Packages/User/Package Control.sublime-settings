@@ -5,14 +5,7 @@
 	],
 	"installed_packages":
 	[
-		"AlignTab",
-		"AutoBackups",
-		"MarkdownPreview",
+		"Automatic Backups",
 		"Package Control",
-		"PowerShell",
-		"Pretty JSON",
-		"Terraform",
-		"Text Pastry",
-		"TypeScript"
-	]
+	],
 }

@@ -60,19 +60,18 @@ defaults write com.apple.CrashReporter DialogType none
 if ! command -v brew &> /dev/null ; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
-    brew update
-    brew upgrade
+    brew update && brew upgrade
 fi
 
 ##############
 # Install applications
 ##############
 Applications=(
+    1password                   # password management
     alt-tab                     # use Option-Tab as a better Alt-Tab
     atuin                       # better shell history
     alacritty                   # terminal
     atuin                       # better terminal history
-    1password                   # password management
     direnv                      # per-directory environment
     fd                          # better than unix `find`
     firefox                     # low market-share browser
@@ -98,7 +97,17 @@ Applications=(
     wget                        # curl with different defaults
 )
 CaskApps=(
-    zoom                        # video chat 
+    zoom                        # video chat
+    discord                     # social network
 )
 brew install "${Applications[@]}"
 brew install --cask "${CaskApps[@]}"
+
+##############
+# Configuration
+##############
+if [[ $OSTYPE == 'darwin'* ]]; then
+    # Sublime text
+    ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings"     "$HOME/Library/Application Support/Sublime Text/Packages/User/Preferences.sublime-settings"
+    ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings" "$HOME/Library/Application Support/Sublime Text/Packages/User/Package Control.sublime-settings"
+fi
