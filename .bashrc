@@ -172,8 +172,8 @@ if command -v direnv &>/dev/null ; then
     msys*|cygwin*)
       # Hackish way to 'fix' path mangling
       # https://github.com/direnv/direnv/issues/343#issuecomment-398868227
-      PREEXEC="$HOME/.dotfiles/bin/bash-preexec.sh"
-      PRECMD="$HOME/.dotfiles/bin/fix-windows-path.sh"
+      PREEXEC="$HOME/bin/bash-preexec.sh"
+      PRECMD="$HOME/bin/fix-windows-path.sh"
       if [[ -f "$PREEXEC" ]] && [[ -f "$PRECMD" ]]; then
         source "$PREEXEC"
         precmd() { source "$PRECMD" ; }
@@ -187,7 +187,7 @@ fi
 # fast directory jumping
 # https://github.com/rupa/z
 _Z_DATA="$HOME/.config/z.config"
-source "$HOME/.dotfiles/bin/z.sh"
+source "$HOME/bin/z.sh"
 
 # Restore our history control
 export HISTCONTROL=ignoredups:erasedups:ignorespace
@@ -210,12 +210,6 @@ export FZF_DEFAULT_OPTS='--height 80% --layout=reverse --border'
 if [[ -f ~/.fzf.bash ]]; then
   source ~/.fzf.bash
 fi
-
-# mcfly: Ctrl-R replacement for Bash
-# https://github.com/cantino/mcfly
-# Installation: "$HOME/win-dotfiles/bin/install/mcfly-install"
-# NOTE: rebound to Ctrl-F by editing mcfly.bash
-# [[ -r "$HOME/bin/mcfly.bash" ]] && source "$HOME/bin/mcfly.bash"
 
 # If `fd` is installed then replace Ctrl-T; this is much faster
 if command -v fd &>/dev/null ; then

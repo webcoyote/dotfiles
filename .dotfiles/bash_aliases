@@ -18,7 +18,7 @@ alias lh='ls -lh'
 
 # git
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    # do nothing; the files below don't work
+    : # do nothing; the files below don't work
 elif [[ -f "/usr/share/bash-completion/completions/git" ]]; then
     source "/usr/share/bash-completion/completions/git"
 elif [[ -f "$HOME/completions/git" ]]; then
@@ -92,4 +92,31 @@ if command -v fzf &>/dev/null ; then
             --bind shift-up:preview-page-up,shift-down:preview-page-down
     }
     alias pg=preview_git_commits
+fi
+
+# Fixup gitconfig
+if ! [[ -f "$HOME/.dotfiles/gitconfig-local" ]]; then
+    case "$OSTYPE" in
+        darwin*)
+            CONFIG="$HOME/.dotfiles/gitconfig-osx"
+        ;;
+
+        linux*)
+            if [[ $(uname -r) =~ icrosoft ]]; then
+                CONFIG="$HOME/.dotfiles/gitconfig-windows"
+            else
+                CONFIG="$HOME/.dotfiles/gitconfig-linux"
+            fi
+        ;;
+
+        msys*|cygwin*)
+            CONFIG="$HOME/.dotfiles/gitconfig-windows"
+        ;;
+
+        *)
+            echo "Unknown OS: $MY_OSTYPE"
+            exit 1
+        ;;
+    esac
+    ln -s "$CONFIG" "$HOME/.dotfiles/gitconfig-local"
 fi
