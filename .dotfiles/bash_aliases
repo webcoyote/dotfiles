@@ -95,28 +95,26 @@ if command -v fzf &>/dev/null ; then
 fi
 
 # Fixup gitconfig
-if ! [[ -f "$HOME/.dotfiles/gitconfig-local" ]]; then
-    case "$OSTYPE" in
-        darwin*)
-            CONFIG="$HOME/.dotfiles/gitconfig-osx"
-        ;;
+case "$OSTYPE" in
+    darwin*)
+        CONFIG="$HOME/.dotfiles/gitconfig-osx"
+    ;;
 
-        linux*)
-            if [[ $(uname -r) =~ icrosoft ]]; then
-                CONFIG="$HOME/.dotfiles/gitconfig-windows"
-            else
-                CONFIG="$HOME/.dotfiles/gitconfig-linux"
-            fi
-        ;;
-
-        msys*|cygwin*)
+    linux*)
+        if [[ $(uname -r) =~ icrosoft ]]; then
             CONFIG="$HOME/.dotfiles/gitconfig-windows"
-        ;;
+        else
+            CONFIG="$HOME/.dotfiles/gitconfig-linux"
+        fi
+    ;;
 
-        *)
-            echo "Unknown OS: $MY_OSTYPE"
-            exit 1
-        ;;
-    esac
-    ln -s "$CONFIG" "$HOME/.dotfiles/gitconfig-local"
-fi
+    msys*|cygwin*)
+        CONFIG="$HOME/.dotfiles/gitconfig-windows"
+    ;;
+
+    *)
+        echo "Unknown OS: $MY_OSTYPE"
+        return
+    ;;
+esac
+ln -sf "$CONFIG" "$HOME/.dotfiles/gitconfig-local"
