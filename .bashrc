@@ -167,16 +167,16 @@ if [ -f "$HOME/.dotfiles/bash_aliases" ]; then
   source "$HOME/.dotfiles/bash_aliases"
 fi
 
+[[ -f "$HOME/bin/.bash-preexec.sh" ]] && source "$HOME/bin/.bash-preexec.sh"
+
 # direnv - avoid profile clutter (too late in my case)
 if command -v direnv &>/dev/null ; then
   case "$OSTYPE" in
     msys*|cygwin*)
       # Hackish way to 'fix' path mangling
       # https://github.com/direnv/direnv/issues/343#issuecomment-398868227
-      PREEXEC="$HOME/bin/bash-preexec.sh"
       PRECMD="$HOME/bin/fix-windows-path.sh"
-      if [[ -f "$PREEXEC" ]] && [[ -f "$PRECMD" ]]; then
-        source "$PREEXEC"
+      if [[ -f "$PRECMD" ]]; then
         precmd() { source "$PRECMD" ; }
       fi
     ;;
@@ -218,7 +218,6 @@ if command -v fd &>/dev/null ; then
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 
-[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 eval "$(atuin init bash)"
 
 # cd command should only tab-complete directories

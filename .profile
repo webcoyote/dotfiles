@@ -53,6 +53,9 @@ fi
 #    fi
 #fi
 
+# Add my bin directories
+PATH="$HOME/bin:$HOME/.cargo/bin:$PATH"
+
 # if running bash, include .bashrc if it exists
 if [ -n "$BASH_VERSION" ]; then
   if [ -f "$HOME/.bashrc" ]; then
@@ -73,9 +76,6 @@ fi
 if [ -f "$OMG_CONFIG_PATH/secrets" ]; then
   source "$OMG_CONFIG_PATH/secrets"
 fi
-
-# Add my bin directories
-PATH="$HOME/bin:$HOME/.cargo/bin:$PATH"
 
 # Nix
 if [ -e /home/pat/.nix-profile/etc/profile.d/nix.sh ]; then . /home/pat/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
