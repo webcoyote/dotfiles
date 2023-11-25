@@ -12,12 +12,13 @@ esac
 export IGNOREEOF=1
 
 # History: https://unix.stackexchange.com/a/18443
-  shopt -s histappend                           # When the shell exits, append to the history file instead of overwriting it
-  export HISTSIZE=5000                          # Maximum number of history lines in memory
-  export HISTFILESIZE=10000                     # Maximum number of history lines on disk
+  # We use atuin now
+  #shopt -s histappend                           # When the shell exits, append to the history file instead of overwriting it
+  #export HISTSIZE=5000                          # Maximum number of history lines in memory
+  #export HISTFILESIZE=10000                     # Maximum number of history lines on disk
   export HISTCONTROL=ignoredups:erasedups:ignorespace
   export HISTIGNORE="ls:ll:exit:gst:pu:po:pushd:popd"
-  export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+  #export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
   # export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
 
 # If set, the pattern "**" used in a pathname expansion context will
