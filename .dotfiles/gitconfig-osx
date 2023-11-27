@@ -2,12 +2,12 @@
     tool = deltawalker
 
 [difftool "deltawalker"]
-    cmd = "/Applications/DeltaWalker.app/Contents/Resources/git-diff" "$LOCAL" "$REMOTE"
+    cmd = "/Applications/DeltaWalker.app/Contents/MacOS/DeltaWalker" "$LOCAL" "$REMOTE" -nosplash -nomru
 
 [merge]
     tool = deltawalker
 
 [mergetool "deltawalker"]
-    cmd = '/Applications/DeltaWalker.app/Contents/Resources/git-merge' "$LOCAL" "$REMOTE" "$BASE" "$MERGED"
+    cmd = '/Applications/DeltaWalker.app/Contents/Resources/git-merge' "$LOCAL" "$REMOTE" "$BASE" -merged="$MERGED" -nosplash -nomru
 
 
