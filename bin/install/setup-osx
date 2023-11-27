@@ -58,7 +58,7 @@ defaults write com.apple.CrashReporter DialogType none
 # Install brew
 ##############
 if ! command -v brew &> /dev/null ; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
     brew update && brew upgrade
 fi
@@ -72,6 +72,8 @@ Applications=(
     atuin                       # better shell history
     alacritty                   # terminal
     atuin                       # better terminal history
+    bash                        # replace OSX bash 3.2 with something modern
+    coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
     fd                          # better than unix `find`
     firefox                     # low market-share browser
@@ -111,3 +113,39 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings"     "$HOME/Library/Application Support/Sublime Text/Packages/User/Preferences.sublime-settings"
     ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings" "$HOME/Library/Application Support/Sublime Text/Packages/User/Package Control.sublime-settings"
 fi
+
+##############
+# Keyboard
+##############
+
+# Disable F11 for Mission Control "Show Desktop"
+# - still manually requires turning off F11 in the keyboard shortcuts app
+# https://www.isi.edu/~calvin/mac-missioncontrolshortcuts.htm
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 36 "
+  <dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>65535</integer>
+        <integer>0</integer>
+      </array>
+    </dict>
+  </dict>
+"
+defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 37 "
+  <dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>65535</integer>
+        <integer>0</integer>
+      </array>
+    </dict>
+  </dict>
+"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Calculate W3C SubResource Integrity check hash for file
 # https://www.srihash.org/
 set -euo pipefail

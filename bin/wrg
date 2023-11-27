@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Run "rg" program with "filenames only" flag and make
 # it return unix-tool-friendly paths even in Git-Bash
 if [[ "$OSTYPE" == "msys" ]]; then
