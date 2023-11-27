@@ -1,13 +1,11 @@
 [diff]
-    tool = deltawalker
-
-[difftool "deltawalker"]
-    cmd = "/Applications/DeltaWalker.app/Contents/MacOS/DeltaWalker" "$LOCAL" "$REMOTE" -nosplash -nomru
+    tool = araxis
 
 [merge]
-    tool = deltawalker
+    tool = araxis
 
-[mergetool "deltawalker"]
-    cmd = '/Applications/DeltaWalker.app/Contents/Resources/git-merge' "$LOCAL" "$REMOTE" "$BASE" -merged="$MERGED" -nosplash -nomru
+[difftool "araxis"]
+    path = /Applications/Araxis Merge.app/Contents/Utilities/compare
 
-
+[mergetool "araxis"]
+    path = /Applications/Araxis Merge.app/Contents/Utilities/compare
