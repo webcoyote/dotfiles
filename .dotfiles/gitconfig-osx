@@ -1,11 +1,18 @@
 [diff]
-    tool = araxis
+    #tool = araxis
+    tool = bc
 
 [merge]
-    tool = araxis
+    #tool = araxis
+    tool = bc
 
 [difftool "araxis"]
-    path = /Applications/Araxis Merge.app/Contents/Utilities/compare
-
+    path = "/Applications/Araxis Merge.app/Contents/Utilities/compare"
 [mergetool "araxis"]
-    path = /Applications/Araxis Merge.app/Contents/Utilities/compare
+    path = "/Applications/Araxis Merge.app/Contents/Utilities/compare"
+
+[difftool "bc"]
+    path = "/opt/homebrew/bin/bcomp"
+[mergetool "bc"]
+    path = "/opt/homebrew/bin/bcomp"
+
