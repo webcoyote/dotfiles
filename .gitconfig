@@ -63,4 +63,4 @@
 [difftool "vscode"]
 	cmd = code --reuse-window --wait --diff $LOCAL $REMOTE
 [mergetool "vscode"]
-	cmd = code --reuse-window --wait $MERGED
+	cmd = code --reuse-window --wait --merge $REMOTE $LOCAL $BASE $MERGED
