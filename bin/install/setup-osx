@@ -70,8 +70,6 @@ Applications=(
     1password                   # password management
     alt-tab                     # use Option-Tab as a better Alt-Tab
     atuin                       # better shell history
-    alacritty                   # terminal
-    atuin                       # better terminal history
     bash                        # replace OSX bash 3.2 with something modern
     coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
@@ -82,9 +80,9 @@ Applications=(
     git-lfs                     # big files
     gnupg                       # PGP / GPG encryption
     google-chrome               # spyware-riddled web browser
+    iina                        # media player
     iterm2                      # terminal
     jq                          # mangle JSON from the command line
-    kitty                       # terminal
     microsoft-office            # word/excel
     microsoft-remote-desktop    # visit my old PC
     netcat                      # play with sockets
@@ -99,8 +97,9 @@ Applications=(
     wget                        # curl with different defaults
 )
 CaskApps=(
-    zoom                        # video chat
-    discord                     # social network
+    discord                     # chat for play
+    slack                       # chat for work
+    zoom                        # chat for work
 )
 brew install "${Applications[@]}"
 brew install --cask "${CaskApps[@]}"
