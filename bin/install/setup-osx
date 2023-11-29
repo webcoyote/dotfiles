@@ -147,4 +147,23 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 37
       </array>
     </dict>
   </dict>
-"
+    "
+
+##############
+# App Shortcuts
+##############
+
+# Override keyboard shortcuts for Araxis Merge so it behaves like WinMerge
+defaults write "com.araxis.merge" "NSUserKeyEquivalents" -dict  \
+    "Next Change" "@~\\U2193"                                   \
+    "Previous Change" "@~\\U2191"                               \
+    "Push to Left and Replace" "@~\\U2190"                      \
+    "Push to Right and Replace" "@~\\U2192"
+
+# Override keyboard shortcuts for Beyond Compare it behaves like WinMerge
+defaults write "com.ScooterSoftware.BeyondCompare" "NSUserKeyEquivalents" -dict \
+    "Next Difference Section" "@~\\U2193"                                       \
+    "Previous Difference Section" "@~\\U2191"                                   \
+    "Copy to Left" "@~\\U2190"                                                  \
+    "Copy to Right" "@~\\U2192"
+
