@@ -54,7 +54,7 @@ fi
 #fi
 
 # Add my bin directories
-PATH="$HOME/bin:$HOME/.cargo/bin:$PATH"
+PATH="$HOME/bin:$PATH"
 
 # if running bash, include .bashrc if it exists
 if [ -n "$BASH_VERSION" ]; then
@@ -75,6 +75,10 @@ fi
 
 if [ -f "$OMG_CONFIG_PATH/secrets" ]; then
   source "$OMG_CONFIG_PATH/secrets"
+fi
+
+if [ -f "$HOME/.cargo/env" ]; then
+  source "$HOME/.cargo/env"
 fi
 
 # Nix

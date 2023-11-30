@@ -10,6 +10,12 @@ alias po=popd
 alias pu=pushd
 alias cd=pushd
 
+# utilities
+command -v bat   &>/dev/null && alias alias cat='bat --paging=never'
+command -v broot &>/dev/null && source "$HOME/.config/broot/launcher/bash/br"
+command -v eza   &>/dev/null && alias ls=eza
+command -v rip   &>/dev/null && mkdir -p "$HOME/.Trash" && export GRAVEYARD="$HOME/.Trash"
+
 # ls
 alias ls='ls --color=tty'
 alias l='ls -l'
@@ -62,23 +68,6 @@ if type -t __git_complete >&/dev/null ; then
  fi
 
 if command -v fzf &>/dev/null ; then
-    # inspired by https://news.ycombinator.com/item?id=32106770
-    function navigate() {
-        local dir;
-
-        echo "Ctrl-D: change directory; Ctrl-C: exit"
-        while true; do
-            # exit with ^D
-            dir="$(ls -a1p | rg '/$' | rg -v '^./$' | fzf --height 40% --reverse --no-multi --preview 'pwd' --preview-window=up,1,border-none --no-info)"
-            if [[ -z "${dir}" ]]; then
-                break
-            else
-                pushd "${dir}"
-            fi
-      done
-    }
-    alias n=navigate
-
     # https://news.ycombinator.com/item?id=32107654
     function preview_file() {
         fzf --preview='less {}' --bind shift-up:preview-page-up,shift-down:preview-page-down
@@ -92,6 +81,11 @@ if command -v fzf &>/dev/null ; then
             --bind shift-up:preview-page-up,shift-down:preview-page-down
     }
     alias pg=preview_git_commits
+fi
+
+# python aliases, e.g. python=python3
+if [[ -d "/opt/homebrew/opt/python/libexec/bin" ]]; then
+    PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"
 fi
 
 # Fixup gitconfig

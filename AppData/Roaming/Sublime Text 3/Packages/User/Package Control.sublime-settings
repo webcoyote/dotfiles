@@ -6,6 +6,7 @@
 	"installed_packages":
 	[
 		"Automatic Backups",
+		"EditorConfig",
 		"Package Control",
 	],
 }

@@ -29,6 +29,10 @@
 	autosetuprebase = always
 [rerere]
 	enabled = true
+[lfs]
+	concurrenttransfers = 100
+[https]
+	postBuffer = 1048576000
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -50,6 +54,7 @@
 	cl = clone
 	ci = commit
 	cns = -c commit.gpgsign=false commit
+	ign = ls-files -o -i --exclude-standard
 	pushf = push --force-with-lease
 	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
 	pr = "!f() { if [ $# -lt 1 ]; then echo \"Usage: git pr <id> [<remote>]	# assuming <remote>[=origin] is on GitHub\"; else git checkout -q \"$(git rev-parse --verify HEAD)\" && git fetch -fv \"${2:-origin}\" pull/\"$1\"/head:pr/\"$1\" && git checkout pr/\"$1\"; fi; }; f"

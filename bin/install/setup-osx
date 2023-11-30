@@ -71,26 +71,41 @@ Applications=(
     alt-tab                     # use Option-Tab as a better Alt-Tab
     atuin                       # better shell history
     bash                        # replace OSX bash 3.2 with something modern
+    bat                         # better cat
     coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
+    eza                         # better ls
     fd                          # better than unix `find`
     firefox                     # low market-share browser
+    fzf                         # fuzzy file-finder
     gh                          # github command-line
     git                         # yeah, it's the best
     git-lfs                     # big files
     gnupg                       # PGP / GPG encryption
     google-chrome               # spyware-riddled web browser
+    grex                        # generate regex from user-provided test cases
     iina                        # media player
     iterm2                      # terminal
+    jless                       # JSON viewer
     jq                          # mangle JSON from the command line
+    jql                         # JSON query language
+    mas                         # Apple Store command line
     microsoft-office            # word/excel
     microsoft-remote-desktop    # visit my old PC
     netcat                      # play with sockets
+    python                      #
     rectangle                   # hotkeys to position windows
-    rg                          # better than unix `grep`
+    ripsecrets                  # avoid committing secrets to git
+    rm-improved                 # move files to trash instead of deleting
+    rg                          # better grep
+    cargo                       #
+    sd                          # better sed
+    sk                          # fuzzy interactive file finder
     starship                    # console prompt
     steam                       # games
     sublime-text                # better text editor
+    tealdeer                    # better tldr
+    tokei                       # count lines within files
     tig                         # graphical git commit viewer
     tree                        # show directory tree in terminal
     visual-studio-code          # development environment
