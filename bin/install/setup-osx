@@ -6,6 +6,14 @@ if [[ $OSTYPE != 'darwin'* ]]; then
     exit 1
 fi
 
+# Mac annoyances
+#
+# - window management isn't as keyboard friendly as Windows. Solution: Rectangle.app
+# - alt-tab only shows apps, not windows. Solution: Alt-Tab.app
+# - BSD terminal apps are years out of date. Solution: brew install coreutils
+# - terminal application is bad. Solution: Iterm.app
+# - hard to tell which window is active: HammerSpoon.app + custom config (but still kinda suxor)
+
 ##############
 # Annoyances
 ##############
@@ -84,6 +92,7 @@ Applications=(
     gnupg                       # PGP / GPG encryption
     google-chrome               # spyware-riddled web browser
     grex                        # generate regex from user-provided test cases
+    hammerspoon                 # OS automation
     iina                        # media player
     iterm2                      # terminal
     jless                       # JSON viewer
