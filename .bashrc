@@ -167,7 +167,7 @@ if [ -f "$HOME/.dotfiles/bash_aliases" ]; then
   source "$HOME/.dotfiles/bash_aliases"
 fi
 
-[[ -f "$HOME/bin/.bash-preexec.sh" ]] && source "$HOME/bin/.bash-preexec.sh"
+[[ -f "$HOME/bin/bash-preexec.sh" ]] && source "$HOME/bin/bash-preexec.sh"
 
 # direnv - avoid profile clutter (too late in my case)
 if command -v direnv &>/dev/null ; then
