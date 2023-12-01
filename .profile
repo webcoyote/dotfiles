@@ -56,13 +56,6 @@ fi
 # Add my bin directories
 PATH="$HOME/bin:$PATH"
 
-# if running bash, include .bashrc if it exists
-if [ -n "$BASH_VERSION" ]; then
-  if [ -f "$HOME/.bashrc" ]; then
-    source "$HOME/.bashrc"
-  fi
-fi
-
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
@@ -79,6 +72,13 @@ fi
 
 if [ -f "$HOME/.cargo/env" ]; then
   source "$HOME/.cargo/env"
+fi
+
+# if running bash, include .bashrc if it exists
+if [ -n "$BASH_VERSION" ]; then
+  if [ -f "$HOME/.bashrc" ]; then
+    source "$HOME/.bashrc"
+  fi
 fi
 
 # Nix

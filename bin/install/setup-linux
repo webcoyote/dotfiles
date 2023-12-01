@@ -10,7 +10,6 @@ warn () {
 readonly PACKAGES=(
     apt-file                # what files does an apt-package include?
     at                      # run command at time
-    cargo                   # rust package manager
     curl                    # get data from URL
     default-jre             # java
     dos2unix                # fix linefeeds
@@ -95,6 +94,9 @@ if command -v npm &>/dev/null ; then
     mkdir -p "$HOME/.npm/node"
     npm config set prefix="$HOME/.npm/node"
 fi
+
+# Install rust/cargo
+command -v cargo &>/dev/null || sh -c "$(curl https://sh.rustup.rs -sSf)" -- -y
 
 # Install fzf: fuzzy file/history/directory searcher
 "$SCRIPT_DIR/fzf-install" || true
