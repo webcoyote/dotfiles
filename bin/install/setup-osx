@@ -88,6 +88,7 @@ Applications=(
     fzf                         # fuzzy file-finder
     gh                          # github command-line
     git                         # yeah, it's the best
+    git-delta                   # better pager for git diff
     git-lfs                     # big files
     gnupg                       # PGP / GPG encryption
     google-chrome               # spyware-riddled web browser

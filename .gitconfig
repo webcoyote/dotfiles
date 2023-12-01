@@ -59,7 +59,12 @@
 	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
 	pr = "!f() { if [ $# -lt 1 ]; then echo \"Usage: git pr <id> [<remote>]	# assuming <remote>[=origin] is on GitHub\"; else git checkout -q \"$(git rev-parse --verify HEAD)\" && git fetch -fv \"${2:-origin}\" pull/\"$1\"/head:pr/\"$1\" && git checkout pr/\"$1\"; fi; }; f"
 	branches = "!f() { git for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname | grep -v 'refs/tags/' ; }; f"
-	delete-merged = ! git-delete-merged
+    # https://stackoverflow.com/a/61315413
+    gone = "!f() { git for-each-ref --format='%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)' refs/heads | xargs git branch -D; }; f"
+[diff]
+    colorMoved = default
+[merge]
+    conflictstyle = diff3
 [difftool]
 	prompt = false
 [mergetool]
@@ -69,3 +74,10 @@
 	cmd = code --reuse-window --wait --diff $LOCAL $REMOTE
 [mergetool "vscode"]
 	cmd = code --reuse-window --wait --merge $REMOTE $LOCAL $BASE $MERGED
+[core]
+    pager = delta
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    light = false      # true if you're in a terminal with a light background color
+    navigate = true    # use n and N to move between diff sections
