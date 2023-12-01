@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [[ $OSTYPE != 'darwin'* ]]; then
     echo >&2 "ERROR: this script is for Mac OSX"
@@ -99,6 +100,7 @@ Applications=(
     jless                       # JSON viewer
     jq                          # mangle JSON from the command line
     jql                         # JSON query language
+    lulu                        # software firewall
     mas                         # Apple Store command line
     microsoft-office            # word/excel
     microsoft-remote-desktop    # visit my old PC
@@ -192,3 +194,19 @@ defaults write "com.ScooterSoftware.BeyondCompare" "NSUserKeyEquivalents" -dict 
     "Copy to Left" "@~\\U2190"                                                  \
     "Copy to Right" "@~\\U2192"
 
+##############
+# Disk
+##############
+# Avoid SSD wear by configuring noatime at startup
+# https://dpron.com/os-x-noatime-multiple-ssds/
+if ! mount | rg "/System/Volumes/VM" | rg noatime &>/dev/null ; then
+    if sudo --prompt "Enter password to configure 'noatime' for disk" true ; then
+        FILE="com.noatime.plist"
+        DSTFILE="/Library/LaunchDaemons/$FILE"
+        sudo cp -f "$SCRIPT_DIR/$FILE" "$DSTFILE"
+        sudo chown root:wheel "$DSTFILE"
+        sudo chmod 644 "$DSTFILE"
+    else
+        echo "Skipping noatime configuration"
+    fi
+fi
