@@ -11,8 +11,7 @@ alias pu=pushd
 alias cd=pushd
 
 # utilities
-command -v bat   &>/dev/null && alias alias cat='bat --paging=never'
-command -v broot &>/dev/null && source "$HOME/.config/broot/launcher/bash/br"
+command -v bat   &>/dev/null && alias cat='bat --paging=never'
 command -v eza   &>/dev/null && alias ls=eza
 command -v rip   &>/dev/null && mkdir -p "$HOME/.Trash" && export GRAVEYARD="$HOME/.Trash"
 
