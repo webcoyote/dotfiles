@@ -99,3 +99,12 @@ is_wsl() {
 if [[ -n "${BASHFUL_DEBUG:-}" ]]; then
 	trap 'debugger' ERR
 fi
+
+# Set XARGS variable to handle lack of '-r' option on OSX; then use `"${XARGS[@]}" ...`
+if ! command -v gxargs &>/dev/null ; then
+    XARGS=("gxargs" "--no-run-if-empty")
+elif args --version 2>&1 |grep -s GNU &>/dev/null ; then
+    XARGS=("xargs" "--no-run-if-empty")
+else
+    XARGS=("xargs")
+fi

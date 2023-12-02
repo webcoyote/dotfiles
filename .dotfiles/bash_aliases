@@ -90,19 +90,19 @@ fi
 # Fixup gitconfig
 case "$OSTYPE" in
     darwin*)
-        CONFIG="$HOME/.dotfiles/gitconfig-osx"
+        CONFIG="gitconfig-osx"
     ;;
 
     linux*)
         if [[ $(uname -r) =~ icrosoft ]]; then
-            CONFIG="$HOME/.dotfiles/gitconfig-windows"
+            CONFIG="gitconfig-windows"
         else
-            CONFIG="$HOME/.dotfiles/gitconfig-linux"
+            CONFIG="gitconfig-linux"
         fi
     ;;
 
     msys*|cygwin*)
-        CONFIG="$HOME/.dotfiles/gitconfig-windows"
+        CONFIG="gitconfig-windows"
     ;;
 
     *)
@@ -110,4 +110,4 @@ case "$OSTYPE" in
         return
     ;;
 esac
-ln -sf "$CONFIG" "$HOME/.dotfiles/gitconfig-local"
+(cd "$HOME/.dotfiles" >/dev/null && ln -sf "$CONFIG" "gitconfig-local")

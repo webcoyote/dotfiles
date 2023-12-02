@@ -18,7 +18,8 @@ setopt menucomplete
 ##############
 # Shell
 ##############
-export PATH=$HOME/bin:$HOME/bin:/usr/local/bin:$PATH
+typeset -U path
+export PATH=$HOME/bin:$HOME/.cargo/bin:/usr/local/bin:$PATH
 export EDITOR='vim'
 
 # vi-editing on command line

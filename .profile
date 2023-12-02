@@ -54,7 +54,7 @@ fi
 #fi
 
 # Add my bin directories
-PATH="$HOME/bin:$PATH"
+PATH="$HOME/bin:$HOME/.cargo/bin:$PATH"
 
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
@@ -68,10 +68,6 @@ fi
 
 if [ -f "$OMG_CONFIG_PATH/secrets" ]; then
   source "$OMG_CONFIG_PATH/secrets"
-fi
-
-if [ -f "$HOME/.cargo/env" ]; then
-  source "$HOME/.cargo/env"
 fi
 
 # if running bash, include .bashrc if it exists

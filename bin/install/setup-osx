@@ -85,6 +85,7 @@ Applications=(
     direnv                      # per-directory environment
     eza                         # better ls
     fd                          # better than unix `find`
+    findutils                   # includes gxargs with the '-r' option
     firefox                     # low market-share browser
     fzf                         # fuzzy file-finder
     gh                          # github command-line
@@ -110,7 +111,6 @@ Applications=(
     ripsecrets                  # avoid committing secrets to git
     rm-improved                 # move files to trash instead of deleting
     rg                          # better grep
-    cargo                       #
     sd                          # better sed
     sk                          # fuzzy interactive file finder
     starship                    # console prompt
@@ -130,6 +130,9 @@ CaskApps=(
 )
 brew install "${Applications[@]}"
 brew install --cask "${CaskApps[@]}"
+
+# Rust can be installed via brew, but Wasm targets do not work, so use rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 ##############
 # Configuration
