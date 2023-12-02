@@ -32,6 +32,8 @@ function Add-EnvPath {
 
 exit /b 1
 
+# check out https://gist.github.com/mikepruett3/7ca6518051383ee14f9cf8ae63ba18a7
+
 if (! (New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)) {
    Write-Host "ERROR: you're not an admin"
    exit /b 1
@@ -80,11 +82,28 @@ choco install -y vscode
 choco install -y winmerge
 choco install -y yasm
 
-scoop install gh
-scoop install fd
-scoop install starship
-scoop install speedcrunch
+ScoopApps=(
+    bat
+    delta
+    fd
+    gh
+    grex
+    speedcrunch
+    starship
+)
+for app in "${ScoopApps[@]}"; do
+    scoop install "$app"
+done
 
+CargoApps=(
+    atuin
+    eza
+    jql
+    sd
+    tealdeer
+    tokei
+)
+cargo install "${CargoApps[@]}"
 
 # Disable memory compression agent
 Disable-MMAgent -mc
