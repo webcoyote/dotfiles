@@ -1,7 +1,7 @@
 # https://starship.rs/config
 
-scan_timeout=10
-command_timeout=50
+scan_timeout=50
+command_timeout=100
 
 [aws]
 disabled = true

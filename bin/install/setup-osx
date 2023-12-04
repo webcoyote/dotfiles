@@ -83,6 +83,7 @@ Applications=(
     bat                         # better cat
     coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
+    dotnet                      # C# language
     eza                         # better ls
     fd                          # better than unix `find`
     findutils                   # includes gxargs with the '-r' option
@@ -106,11 +107,12 @@ Applications=(
     microsoft-office            # word/excel
     microsoft-remote-desktop    # visit my old PC
     netcat                      # play with sockets
-    python                      #
+    python                      # Python language
     rectangle                   # hotkeys to position windows
+    rg                          # better grep
     ripsecrets                  # avoid committing secrets to git
     rm-improved                 # move files to trash instead of deleting
-    rg                          # better grep
+    # rust                      # Rust language -- installed via RustUp below
     sd                          # better sed
     sk                          # fuzzy interactive file finder
     starship                    # console prompt
