@@ -81,6 +81,7 @@ Applications=(
     atuin                       # better shell history
     bash                        # replace OSX bash 3.2 with something modern
     bat                         # better cat
+    bottom                      # CPU graph (replaces top)
     coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
     dotnet-sdk                  # C# language
@@ -107,6 +108,7 @@ Applications=(
     microsoft-office            # word/excel
     microsoft-remote-desktop    # visit my old PC
     netcat                      # play with sockets
+    procs                       # process list (replaces ps)
     python                      # Python language
     rectangle                   # hotkeys to position windows
     rg                          # better grep
@@ -124,6 +126,8 @@ Applications=(
     tree                        # show directory tree in terminal
     visual-studio-code          # development environment
     wget                        # curl with different defaults
+    xh                          # curl/wget replacement
+    zoxide                      # directory jumper (replaces z.sh)
 )
 CaskApps=(
     discord                     # chat for play
@@ -135,6 +139,13 @@ brew install --cask "${CaskApps[@]}"
 
 # Rust can be installed via brew, but Wasm targets do not work, so use rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+CargoApps=(
+    felix       `: # file explorer`
+    teehee      `: # hex editor`
+    watchexec   `: # command runner`
+)
+cargo install "${CargoApps[@]}"
 
 ##############
 # Configuration

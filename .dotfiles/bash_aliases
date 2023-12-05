@@ -2,7 +2,7 @@
 
 # misc aliases
 alias d=docker
-alias h='history | rg -i'
+alias h='atuin history list | rg -i'
 alias less='less -R'
 
 # cd
