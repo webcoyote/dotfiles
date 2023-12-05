@@ -83,7 +83,7 @@ Applications=(
     bat                         # better cat
     coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
-    dotnet                      # C# language
+    dotnet-sdk                  # C# language
     eza                         # better ls
     fd                          # better than unix `find`
     findutils                   # includes gxargs with the '-r' option
