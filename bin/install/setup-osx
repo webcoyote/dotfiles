@@ -32,8 +32,8 @@ fi
 # Keyboard
 ##############
 # Set fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 1
-defaults write NSGlobalDomain InitialKeyRepeat -int 10
+defaults write NSGlobalDomain KeyRepeat -int 2
+defaults write NSGlobalDomain InitialKeyRepeat -int 8
 
 # enable keyboard navigation to move focus between controls (tab / shift-tab
 defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
@@ -77,7 +77,7 @@ fi
 ##############
 Applications=(
     1password                   # password management
-    alt-tab                     # use Option-Tab as a better Alt-Tab
+    # alt-tab                   # use Option-Tab as a better Alt-Tab
     atuin                       # better shell history
     bash                        # replace OSX bash 3.2 with something modern
     bat                         # better cat
