@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    echo >&2 "ERROR: This script must be sourced:"
+    echo >&2 "  source $(basename "${BASH_SOURCE[0]}")"
+    exit 1
+fi
+
+export PATH=$HOME/bin:$HOME/.cargo/bin:/usr/local/bin:$PATH
+
+# The only reliably cross-platform editor
+export EDITOR=vi
+
+# Shell history
+export HISTCONTROL=ignoredups:erasedups:ignorespace
+export HISTIGNORE="ls:ll:exit:gst:pu:po:pushd:popd"
+
+# GPG for signing git commits
+export GPG_TTY=$(tty)
+
 # misc aliases
 alias d=docker
 alias h='atuin history list | rg -i'
@@ -12,11 +30,10 @@ alias cd=pushd
 
 # utilities
 command -v bat   &>/dev/null && alias cat='bat --paging=never'
-command -v eza   &>/dev/null && alias ls=eza
+command -v eza   &>/dev/null && alias ls=eza || alias ls='ls --color=tty'
 command -v rip   &>/dev/null && mkdir -p "$HOME/.Trash" && export GRAVEYARD="$HOME/.Trash"
 
 # ls
-alias ls='ls --color=tty'
 alias l='ls -l'
 alias ll='ls -al'
 alias lh='ls -lh'
@@ -35,38 +52,99 @@ fi
 alias g=git
 alias ga='git add'
 alias gb='git branch'
-alias gc='git commit -v'
 alias ggc='git -c commit.gpgsign=false commit -v'
-alias gcl='git config --list'
 alias gco='git checkout'
 alias gpp='git pull --prune'
-alias gnp='git --no-pager'
 alias gst='git status -sb'
 alias gl='git lola'
 
 ## Git diff aliases
-    # https://stackoverflow.com/a/41730200
-    alias gt='git difftool --diff-filter=M'
-    alias gts='git difftool --diff-filter=M --staged'
-
-    alias gta='git difftool'
-    alias gtsa='git difftool --staged'
-    alias gd='git diff'
-    alias gds='git diff --staged'
+# https://stackoverflow.com/a/41730200
+alias gt='git difftool --diff-filter=M'
+alias gts='git difftool --diff-filter=M --staged'
+alias gta='git difftool'
+alias gtsa='git difftool --staged'
+alias gd='git diff'
+alias gds='git diff --staged'
 
 # Git completion for aliases
 if type -t __git_complete >&/dev/null ; then
-     __git_complete g __git_main
-     __git_complete gb _git_branch
-     __git_complete gco _git_checkout
-     __git_complete gt _git_difftool
-     __git_complete gts _git_difftool
-     __git_complete gd _git_diff
-     __git_complete gds _git_diff
-     __git_complete tig _git_branch
- fi
+    __git_complete g __git_main
+    __git_complete gb _git_branch
+    __git_complete gco _git_checkout
+    __git_complete gt _git_difftool
+    __git_complete gts _git_difftool
+    __git_complete gd _git_diff
+    __git_complete gds _git_diff
+    __git_complete tig _git_branch
+fi
 
+# python aliases, e.g. python=python3
+if [[ -d "/opt/homebrew/opt/python/libexec/bin" ]]; then
+    PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"
+fi
+
+# fast directory jumping
+if command -v zoxide &>/dev/null ; then
+    _ZO_DATA_DIR="$HOME/.config"
+    if [[ "$SHELL" == "/bin/zsh" ]]; then
+        eval "$(zoxide init zsh)"
+    else
+        eval "$(zoxide init bash)"
+    fi
+else
+    # https://github.com/rupa/z
+    _Z_DATA="$HOME/.config/z.config"
+    source "$HOME/bin/z.sh"
+fi
+
+# Shell prompt
+if command -v starship &>/dev/null ; then
+    if [[ "$SHELL" == "/bin/zsh" ]]; then
+        eval "$(starship init zsh)"
+    else
+        eval "$(starship init bash)"
+    fi
+fi
+
+# Shell history
+if command -v atuin &>/dev/null ; then
+    if [[ "$SHELL" == "/bin/zsh" ]]; then
+        eval "$(atuin init zsh)"
+    else
+        eval "$(atuin init bash)"
+    fi
+fi
+
+# Per-directory environment variables
+if command -v direnv &>/dev/null ; then
+    case "$OSTYPE" in
+        msys*|cygwin*)
+            # Hackish way to 'fix' path mangling
+            # https://github.com/direnv/direnv/issues/343#issuecomment-398868227
+            PRECMD="$HOME/bin/fix-windows-path.sh"
+            if [[ $"SHELL" == "/bin/zsh" ]] && [[ -f "$PRECMD" ]]; then
+                precmd() { source "$PRECMD" ; }
+            fi
+        ;;
+    esac
+
+    if [[ "$SHELL" == "/bin/zsh" ]]; then
+        eval "$(direnv hook zsh)"
+    else
+        eval "$(direnv hook bash)"
+    fi
+fi
+
+# fzf: Ctrl-R replacement for Bash
+# https://github.com/junegunn/
+# Ctrl-R: search histroy
+# Ctrl-T: search files
+# Alt-C:  change directory
 if command -v fzf &>/dev/null ; then
+    export FZF_DEFAULT_OPTS='--height 80% --layout=reverse --border'
+    [[ -f "$HOME/.fzf.sh" ]] && source "$HOME/.fzf.zsh"
+
     # https://news.ycombinator.com/item?id=32107654
     function preview_file() {
         fzf --preview='less {}' --bind shift-up:preview-page-up,shift-down:preview-page-down
@@ -82,9 +160,10 @@ if command -v fzf &>/dev/null ; then
     alias pg=preview_git_commits
 fi
 
-# python aliases, e.g. python=python3
-if [[ -d "/opt/homebrew/opt/python/libexec/bin" ]]; then
-    PATH="/opt/homebrew/opt/python/libexec/bin:$PATH"
+# If `fd` is installed then replace Ctrl-T; this is much faster
+if command -v fd &>/dev/null ; then
+  export FZF_DEFAULT_COMMAND='fd --type file'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 
 # Fixup gitconfig
@@ -111,3 +190,10 @@ case "$OSTYPE" in
     ;;
 esac
 (cd "$HOME/.dotfiles" >/dev/null && ln -sf "$CONFIG" "gitconfig-local")
+
+##############
+# SSH
+##############
+# Avoid password prompt *every* *single* *time* for ssh
+# [[ -f "$HOME/.dotfiles/ssh-agent" ]] && source "$HOME/.dotfiles/ssh-agent"
+

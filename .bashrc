@@ -8,19 +8,6 @@ case $- in
       *) return;;
 esac
 
-# Do not leave the shell when pressing Ctrl-D once (must press twice)
-export IGNOREEOF=1
-
-# History: https://unix.stackexchange.com/a/18443
-  # We use atuin now
-  #shopt -s histappend                           # When the shell exits, append to the history file instead of overwriting it
-  #export HISTSIZE=5000                          # Maximum number of history lines in memory
-  #export HISTFILESIZE=10000                     # Maximum number of history lines on disk
-  export HISTCONTROL=ignoredups:erasedups:ignorespace
-  export HISTIGNORE="ls:ll:exit:gst:pu:po:pushd:popd"
-  #export PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
-  # export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND$'\n'}history -a; history -c; history -r"
-
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
@@ -76,13 +63,13 @@ case "$TERM" in
 esac
 
 # enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
+#if [ -x /usr/bin/dircolors ]; then
+#    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+#    alias ls='ls --color=auto'
+#    alias grep='grep --color=auto'
+#    alias fgrep='fgrep --color=auto'
+#    alias egrep='egrep --color=auto'
+#fi
 
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
@@ -91,6 +78,9 @@ fi
 # and so programs like docker-compose cannot use it during environment
 # variable interpolation! Let's fix this here:
 export HOSTNAME
+
+# Do not leave the shell when pressing Ctrl-D once (must press twice)
+export IGNOREEOF=1
 
 # Prevent curl from whining about certificates:
 # https://stackoverflow.com/questions/3160909/how-do-i-deal-with-certificates-using-curl-while-trying-to-access-an-https-url#comment59801161_3160909
@@ -127,9 +117,6 @@ bind "set match-hidden-files off"           # do not match hidden files unless '
 # To get these messages no longer displayed, the following entry is /etc/environmentrequired in the.
 export NO_AT_BRIDGE=1
 
-# Tools
-export EDITOR=vi
-
 # Fix for Windows git-bash
 export USER="${USER:-$USERNAME}"
 
@@ -162,70 +149,14 @@ case "$OSTYPE" in
   ;;
 esac
 
-# save keystrokes
-if [ -f "$HOME/.dotfiles/bash_aliases" ]; then
-  source "$HOME/.dotfiles/bash_aliases"
-fi
-
-[[ -f "$HOME/bin/bash-preexec.sh" ]] && source "$HOME/bin/bash-preexec.sh"
-
-# direnv - avoid profile clutter (too late in my case)
-if command -v direnv &>/dev/null ; then
-  case "$OSTYPE" in
-    msys*|cygwin*)
-      # Hackish way to 'fix' path mangling
-      # https://github.com/direnv/direnv/issues/343#issuecomment-398868227
-      PRECMD="$HOME/bin/fix-windows-path.sh"
-      if [[ -f "$PRECMD" ]]; then
-        precmd() { source "$PRECMD" ; }
-      fi
-    ;;
-  esac
-
-  eval "$(direnv hook bash)"
-fi
-
-# fast directory jumping
-# https://github.com/rupa/z
-_Z_DATA="$HOME/.config/z.config"
-source "$HOME/bin/z.sh"
-
-# Restore our history control
-export HISTCONTROL=ignoredups:erasedups:ignorespace
-
-# GPG
-export GPG_TTY=$(tty)
-
-# Enable starship prompt
-command -v starship >/dev/null && eval "$(starship init bash)"
-
 # goto home directory (needed for WSL)
 \cd "$HOME"
-
-# fzf: Ctrl-R replacement for Bash
-# https://github.com/junegunn/
-# Ctrl-R: search histroy
-# Ctrl-T: search files
-# Alt-C:  change directory
-export FZF_DEFAULT_OPTS='--height 80% --layout=reverse --border'
-if [[ -f ~/.fzf.bash ]]; then
-  source ~/.fzf.bash
-fi
-
-# If `fd` is installed then replace Ctrl-T; this is much faster
-if command -v fd &>/dev/null ; then
-  export FZF_DEFAULT_COMMAND='fd --type file'
-  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-fi
-
-eval "$(atuin init bash)"
 
 # cd command should only tab-complete directories
 complete -d cd
 
-# Avoid password prompt *every* *single* *time* for ssh
-if [[ -f "$HOME/.dotfiles/ssh-agent" ]]; then
-  source "$HOME/.dotfiles/ssh-agent"
-fi
+# enable bash command-hooks
+[[ -f "$HOME/bin/bash-preexec.sh" ]] && source "$HOME/bin/bash-preexec.sh"
 
-### NO MORE STUFF BELOW SSH-AGENT
+# aliases for bash/zsh
+[[ -f "$HOME/.dotfiles/bash_aliases" ]] && source "$HOME/.dotfiles/bash_aliases"
