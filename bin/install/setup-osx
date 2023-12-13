@@ -141,11 +141,13 @@ brew install --cask "${CaskApps[@]}"
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 CargoApps=(
-    felix       `: # file explorer`
-    teehee      `: # hex editor`
-    watchexec   `: # command runner`
+    cargo-update    `: # update cargo packages`
+    felix           `: # file explorer`
+    teehee          `: # hex editor`
+    watchexec       `: # command runner`
 )
 cargo install "${CargoApps[@]}"
+cargo install-update -a
 
 ##############
 # Configuration

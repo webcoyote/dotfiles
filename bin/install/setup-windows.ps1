@@ -97,13 +97,16 @@ done
 
 CargoApps=(
     atuin
+    cargo-update
     eza
     jql
     sd
     tealdeer
     tokei
+    zoxide
 )
 cargo install "${CargoApps[@]}"
+cargo install-update -a
 
 # Disable memory compression agent
 Disable-MMAgent -mc

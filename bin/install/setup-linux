@@ -23,6 +23,7 @@ readonly PACKAGES=(
     moreutils               # https://joeyh.name/code/moreutils/
     nodejs npm              # node.js and package manager
     net-tools               # netstat/ifconfig tools
+    pkg-config              # retrieve information about installed libs; needed by cargo-update
     remake                  # make-wrapper: show makefile tasks; debug makefiles
     ripgrep                 # even faster/better grep
     vim                     # better than vi
@@ -117,6 +118,7 @@ command -v starship >/dev/null || sh -c "$(curl -fsSL https://starship.rs/instal
 CargoApps=(
     atuin
     bat
+    cargo-update
     du-dust
     eza
     fd-find
@@ -128,8 +130,10 @@ CargoApps=(
     tealdeer
     tokei
     # starship
+    zoxide
 )
 cargo install "${CargoApps[@]}"
+cargo install-update -a
 
 # Used to use this code to avoid having conflicts between linux and {Windows git-bash, Gnu-on-Windows ("gow")}.
 # Instead this problem is now fixed by doing OS discovery in `~/.profile` and removing undesirable paths.
