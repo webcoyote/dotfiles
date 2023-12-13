@@ -55,7 +55,7 @@ alias gb='git branch'
 alias ggc='git -c commit.gpgsign=false commit -v'
 alias gco='git checkout'
 alias gpp='git pull --prune'
-alias gst='git status -sb'
+alias gst='git status -sb | less -RF'
 alias gl='git lola'
 
 ## Git diff aliases
