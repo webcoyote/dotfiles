@@ -29,14 +29,24 @@ if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
 fi
 
 ##############
+# All Applications
+##############
+# Expand save panel by default
+defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
+
+# Save to disk (not to iCloud) by default
+defaults write -g NSDocumentSaveNewDocumentsToCloud -bool false
+
+
+##############
 # Keyboard
 ##############
 # Set fast keyboard repeat rate
-defaults write NSGlobalDomain KeyRepeat -int 2
-defaults write NSGlobalDomain InitialKeyRepeat -int 12
+defaults write -g KeyRepeat -int 2
+defaults write -g InitialKeyRepeat -int 12
 
-# enable keyboard navigation to move focus between controls (tab / shift-tab
-defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
+# enable keyboard navigation to move focus between controls (tab / shift-tab)
+defaults write -g AppleKeyboardUIMode -int 3
 
 # default behavior when holding down a key is to bring up a menu of characters with different diacritical marks.
 # Try holding down ‘e’ to see this in action. If you want to instead repeat characters when a key is held:
@@ -53,6 +63,13 @@ defaults write com.apple.finder ShowPathbar -bool true
 
 # Allow quitting Finder
 defaults write com.apple.finder QuitMenuItem -bool true
+
+# Set new window location to $HOME directory
+defaults write com.apple.finder NewWindowTarget -string "PfHm"
+
+# Avoid creating .DS_Store files on network or USB volumes
+defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 ##############
 # Misc
@@ -131,6 +148,7 @@ Applications=(
 )
 CaskApps=(
     discord                     # chat for play
+    scrollreverser              # reverse mouse wheel scrolling
     slack                       # chat for work
     zoom                        # chat for work
 )

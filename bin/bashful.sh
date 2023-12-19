@@ -108,3 +108,7 @@ elif args --version 2>&1 |grep -s GNU &>/dev/null ; then
 else
     XARGS=("xargs")
 fi
+
+
+title_case() { set ${*,,} ; echo ${*^} ; }
+lower_case() { set ${*,,} ; echo ${*} ; }
