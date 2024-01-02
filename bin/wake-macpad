@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+wakeonlan 5c:e9:1e:79:0a:76

@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+wakeonlan a8:a1:59:29:9f:3a

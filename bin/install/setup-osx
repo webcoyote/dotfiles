@@ -143,6 +143,7 @@ Applications=(
     tig                         # graphical git commit viewer
     tree                        # show directory tree in terminal
     visual-studio-code          # development environment
+    wakeonlan                   # wakeup other computers
     wget                        # curl with different defaults
     xh                          # curl/wget replacement
     zoxide                      # directory jumper (replaces z.sh)
