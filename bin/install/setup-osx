@@ -124,6 +124,7 @@ Applications=(
     mas                         # Apple Store command line
     microsoft-office            # word/excel
     microsoft-remote-desktop    # visit my old PC
+    moreutils                   # ifne/chronic/ts/sponge/vipe/pee
     netcat                      # play with sockets
     procs                       # process list (replaces ps)
     python                      # Python language

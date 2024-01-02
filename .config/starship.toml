@@ -1,7 +1,8 @@
 # https://starship.rs/config
 
-scan_timeout=50
-command_timeout=100
+scan_timeout=150
+command_timeout=150
+add_newline = true
 
 [aws]
 disabled = true
@@ -13,8 +14,11 @@ disabled = false
 disabled = false
 
 [directory]
-truncation_length = 5
+truncation_length = 8
 truncate_to_repo = false
+
+[dotnet]
+disabled = true
 
 [nix_shell]
 disabled = true

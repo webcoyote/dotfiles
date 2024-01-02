@@ -20,8 +20,13 @@ export GPG_TTY=$(tty)
 
 # misc aliases
 alias d=docker
-alias h='atuin history list | rg -i'
 alias less='less -R'
+
+# Search history
+function h () {
+    pattern="${1:-.}"
+    atuin history list | rg -i "$pattern"
+}
 
 # cd
 alias po=popd
