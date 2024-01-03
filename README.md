@@ -31,6 +31,12 @@ There are many solutions to managing dotfiles, each with their own trade-offs. T
         # Do not show untracked files; the user's home directory
         # may contain thousands of files
         git config --local status.showUntrackedFiles no
+
+        # The home directory contains hundreds of thousands of files
+        # in subfolders. Scanning them all takes time, so the gitignore
+        # file excludes ... everything. When adding files, this config
+        # makes it less annoying to add files
+        git config advice.addIgnoredFile false
     )
 
     # Move repository to home directory
