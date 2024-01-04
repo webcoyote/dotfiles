@@ -94,7 +94,7 @@ fi
 ##############
 Applications=(
     1password                   # password management
-    # alt-tab                   # use Option-Tab as a better Alt-Tab
+    alt-tab                     # use Option-Tab as a better Alt-Tab
     atuin                       # better shell history
     bash                        # replace OSX bash 3.2 with something modern
     bat                         # better cat
