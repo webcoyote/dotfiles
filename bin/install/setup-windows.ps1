@@ -88,6 +88,7 @@ ScoopApps=(
     fd
     gh
     grex
+    nircmd
     speedcrunch
     starship
 )

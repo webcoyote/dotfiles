@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
+if [[ $(uname -r) =~ icrosoft ]]; then
+    MY_OSTYPE=wsl
+else
+    MY_OSTYPE="$OSTYPE"
+fi
+
+case "$MY_OSTYPE" in
+    msys*|wsl*|cygwin*)
+        exec nircmd.exe standby
+    ;;
+
+    darwin*)
+        #sudo shutdown -s now
+        #exec osascript -e 'tell application "Finder" to sleep'
+        #exec osascript -e 'tell application "System Events" to sleep'
+        #pmset displaysleepnow
+        #pmset sleepnow
+        echo "Nothing works!"
+    ;;
+
+    *)
+        echo "Not implemented for $OSTYPE"
+        exit 1
+    ;;
+esac
