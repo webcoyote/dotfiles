@@ -62,6 +62,9 @@ alias gco='git checkout'
 alias gpp='git pull --prune'
 alias gst='git status -sb | less -RF'
 alias gl='git lola'
+alias cp='git cherry-pick'
+alias cm='git commit'
+alias cmu='git -c commit.gpgsign=false commit'
 
 ## Git diff aliases
 # https://stackoverflow.com/a/41730200

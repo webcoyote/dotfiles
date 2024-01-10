@@ -43,24 +43,18 @@
 	status = always
 	branch = auto
 [alias]
-	lg = log -p
-	lol = log --graph --decorate --oneline
-	lola = log --graph --decorate --oneline --all
-	lo = log --pretty=oneline
-	glog = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --graph
-	ulog = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-	last = log -1 --stat
-	cp = cherry-pick
-	cl = clone
-	ci = commit
-	cns = -c commit.gpgsign=false commit
-	ign = ls-files -o -i --exclude-standard
-	pushf = push --force-with-lease
-	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
-	pr = "!f() { if [ $# -lt 1 ]; then echo \"Usage: git pr <id> [<remote>]	# assuming <remote>[=origin] is on GitHub\"; else git checkout -q \"$(git rev-parse --verify HEAD)\" && git fetch -fv \"${2:-origin}\" pull/\"$1\"/head:pr/\"$1\" && git checkout pr/\"$1\"; fi; }; f"
-	branches = "!f() { git for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname | grep -v 'refs/tags/' ; }; f"
+    alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
+    branches = "!f() {git for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname | grep -v 'refs/tags/' ; }; f"
     # https://stackoverflow.com/a/61315413
     gone = "!f() { git for-each-ref --format='%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)' refs/heads | xargs git branch -D; }; f"
+    last = log -1 --stat
+	lo = log --pretty=oneline
+	lol = log --graph --decorate --oneline
+	lola = log --graph --decorate --oneline --all
+    logu = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+	logg = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --graph
+    pr = "!f() { if [ $# -lt 1 ]; then echo \"Usage: git pr <id> [<remote>] # assuming <remote>[=origin] is on GitHub\"; else git checkout -q \"$(git rev-parse --verify HEAD)\" && git fetch -fv \"${2:-origin}\" pull/\"$1\"/head:pr/\"$1\" && git checkout pr/\"$1\"; fi; }; f"
+	pushf = push --force-with-lease
 [diff]
     colorMoved = default
 [merge]
