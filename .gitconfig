@@ -1,21 +1,20 @@
 [user]
 	name = Patrick Wyatt
+	email = pat@codeofhonor.com
 	signingkey = 237DED3395984548
 
 # Platform-specific include files
 # https://medium.com/doing-things-right/platform-specific-gitconfigs-and-the-wonderful-includeif-7376cd44994d
 [includeIf "gitdir:/Users/"]
 	path = ~/.dotfiles/gitconfig-osx
-[includeIf "gitdir:C:"]
+[includeIf "gitdir/i:C:/Users/"]
 	path = ~/.dotfiles/gitconfig-windows
 [includeIf "gitdir:/home/"]
 	path = ~/.dotfiles/gitconfig-linux
 
-[includeIf "gitdir:~/personal/"]
-    path = ~/.dotfiles/gituser-personal
+# Override settings for work
 [includeIf "gitdir:~/work/"]
-    path = ~/.dotfiles/gituser-omg
-
+	path = ~/.dotfiles/gituser-omg
 
 # Convert GitHub URLS to use SSH instead of HTTPS to avoid password entry
 # https://blog.scottlowe.org/2023/12/11/automatically-transforming-git-urls/
