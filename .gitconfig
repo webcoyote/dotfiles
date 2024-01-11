@@ -1,9 +1,27 @@
-[include]
-	path = .dotfiles/gitconfig-local
 [user]
 	name = Patrick Wyatt
-	email = pat@onemoregame.com
 	signingkey = 237DED3395984548
+
+# Platform-specific include files
+# https://medium.com/doing-things-right/platform-specific-gitconfigs-and-the-wonderful-includeif-7376cd44994d
+[includeIf "gitdir:/Users/"]
+	path = ~/.dotfiles/gitconfig-osx
+[includeIf "gitdir:C:"]
+	path = ~/.dotfiles/gitconfig-windows
+[includeIf "gitdir:/home/"]
+	path = ~/.dotfiles/gitconfig-linux
+
+[includeIf "gitdir:~/personal/"]
+    path = ~/.dotfiles/gituser-personal
+[includeIf "gitdir:~/work/"]
+    path = ~/.dotfiles/gituser-omg
+
+
+# Convert GitHub URLS to use SSH instead of HTTPS to avoid password entry
+# https://blog.scottlowe.org/2023/12/11/automatically-transforming-git-urls/
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
+
 [core]
 	editor = vi
 	eol = lf
@@ -43,22 +61,22 @@
 	status = always
 	branch = auto
 [alias]
-    alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
-    branches = "!f() {git for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname | grep -v 'refs/tags/' ; }; f"
-    # https://stackoverflow.com/a/61315413
-    gone = "!f() { git for-each-ref --format='%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)' refs/heads | xargs git branch -D; }; f"
-    last = log -1 --stat
+	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
+	branches = "!f() {git for-each-ref --format=' %(authorname) %09 %(refname)' --sort=authorname | grep -v 'refs/tags/' ; }; f"
+	# https://stackoverflow.com/a/61315413
+	gone = "!f() { git for-each-ref --format='%(if:equals=[gone])%(upstream:track)%(then)%(refname:short)%(end)' refs/heads | xargs git branch -D; }; f"
+	last = log -1 --stat
 	lo = log --pretty=oneline
 	lol = log --graph --decorate --oneline
 	lola = log --graph --decorate --oneline --all
-    logu = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+	logu = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 	logg = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --graph
-    pr = "!f() { if [ $# -lt 1 ]; then echo \"Usage: git pr <id> [<remote>] # assuming <remote>[=origin] is on GitHub\"; else git checkout -q \"$(git rev-parse --verify HEAD)\" && git fetch -fv \"${2:-origin}\" pull/\"$1\"/head:pr/\"$1\" && git checkout pr/\"$1\"; fi; }; f"
+	pr = "!f() { if [ $# -lt 1 ]; then echo \"Usage: git pr <id> [<remote>] # assuming <remote>[=origin] is on GitHub\"; else git checkout -q \"$(git rev-parse --verify HEAD)\" && git fetch -fv \"${2:-origin}\" pull/\"$1\"/head:pr/\"$1\" && git checkout pr/\"$1\"; fi; }; f"
 	pushf = push --force-with-lease
 [diff]
-    colorMoved = default
+	colorMoved = default
 [merge]
-    conflictstyle = diff3
+	conflictstyle = diff3
 [difftool]
 	prompt = false
 [mergetool]
@@ -69,9 +87,9 @@
 [mergetool "vscode"]
 	cmd = code --reuse-window --wait --merge $REMOTE $LOCAL $BASE $MERGED
 [core]
-    pager = delta
+	pager = delta
 [interactive]
-    diffFilter = delta --color-only
+	diffFilter = delta --color-only
 [delta]
-    light = false      # true if you're in a terminal with a light background color
-    navigate = true    # use n and N to move between diff sections
+	light = false	  # true if you're in a terminal with a light background color
+	navigate = true	# use n and N to move between diff sections

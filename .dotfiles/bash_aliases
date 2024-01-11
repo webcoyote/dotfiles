@@ -174,31 +174,6 @@ if command -v fd &>/dev/null ; then
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 
-# Fixup gitconfig
-case "$OSTYPE" in
-    darwin*)
-        CONFIG="gitconfig-osx"
-    ;;
-
-    linux*)
-        if [[ $(uname -r) =~ icrosoft ]]; then
-            CONFIG="gitconfig-windows"
-        else
-            CONFIG="gitconfig-linux"
-        fi
-    ;;
-
-    msys*|cygwin*)
-        CONFIG="gitconfig-windows"
-    ;;
-
-    *)
-        echo "Unknown OS: $MY_OSTYPE"
-        return
-    ;;
-esac
-(cd "$HOME/.dotfiles" >/dev/null && ln -sf "$CONFIG" "gitconfig-local")
-
 ##############
 # SSH
 ##############
