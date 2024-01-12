@@ -8,6 +8,10 @@ fi
 
 export PATH=$HOME/bin:$HOME/.cargo/bin:/usr/local/bin:$PATH
 
+if command -v brew &>/dev/null ; then
+    PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
+fi
+
 # The only reliably cross-platform editor
 export EDITOR=vi
 
@@ -54,7 +58,6 @@ elif [[ -f "$HOME/completions/git" ]]; then
 fi
 
 # Git aliases
-alias g=git
 alias ga='git add'
 alias gb='git branch'
 alias ggc='git -c commit.gpgsign=false commit -v'
@@ -62,9 +65,9 @@ alias gco='git checkout'
 alias gpp='git pull --prune'
 alias gst='git status -sb | less -RF'
 alias gl='git lola'
-alias cp='git cherry-pick'
-alias cm='git commit'
-alias cmu='git -c commit.gpgsign=false commit'
+alias gcp='git cherry-pick'
+alias gcm='git commit'
+alias gcmu='git -c commit.gpgsign=false commit'
 
 ## Git diff aliases
 # https://stackoverflow.com/a/41730200

@@ -47,6 +47,7 @@ auto_sync = false
 ## the accepted values are identical to those of "filter_mode"
 ## leave unspecified to use same mode set in "filter_mode"
 # filter_mode_shell_up_key_binding = "global"
+filter_mode_shell_up_key_binding = "directory"
 
 ## which search mode to use when atuin is invoked from a shell up-key binding
 ## the accepted values are identical to those of "search_mode"
@@ -56,6 +57,7 @@ auto_sync = false
 ## which style to use
 ## possible values: auto, full, compact
 # style = "auto"
+style = "compact"
 
 ## the maximum number of lines the interface should take up
 ## set it to 0 to always go full screen
@@ -84,6 +86,7 @@ auto_sync = false
 ## use ctrl instead of alt as the shortcut modifier key for numerical UI shortcuts
 ## alt-0 .. alt-9
 # ctrl_n_shortcuts = false
+ctrl_n_shortcuts = true
 
 ## prevent commands matching any of these regexes from being written to history.
 ## Note that these regular expressions are unanchored, i.e. if they don't start
@@ -113,6 +116,7 @@ auto_sync = false
 ## version (and whether an update is available), a keymap hint, and the total
 ## amount of commands in your history.
 # show_help = true
+show_help = false
 
 ## Defaults to true. This matches history against a set of default regex, and will not save it if we get a match. Defaults include
 ## 1. AWS key id
