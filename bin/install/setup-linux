@@ -12,6 +12,7 @@ readonly PACKAGES=(
     at                      # run command at time
     curl                    # get data from URL
     default-jre             # java
+    direnv                  # per-directory environment
     dos2unix                # fix linefeeds
     fd-find                 # "fd" tool
     git gitk git-lfs tig    # git
