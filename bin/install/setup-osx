@@ -98,6 +98,7 @@ Applications=(
     atuin                       # better shell history
     bash                        # replace OSX bash 3.2 with something modern
     bat                         # better cat
+    blueutil                    # bluetooth from the command line
     bottom                      # CPU graph (replaces top)
     coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
@@ -111,6 +112,7 @@ Applications=(
     git                         # yeah, it's the best
     git-delta                   # better pager for git diff
     git-lfs                     # big files
+    gnu-getopt                  # because OSX getopt is ancient
     gnupg                       # PGP / GPG encryption
     google-chrome               # spyware-riddled web browser
     grex                        # generate regex from user-provided test cases

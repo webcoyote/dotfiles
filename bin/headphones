@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Patrick's Airpods
+# my airpods
 DEVICE="FC:B6:D8:D6:98:33"
 
 # Parse options
 eval set -- "$(getopt -o d:h --long device:,help -n "${BASH_SOURCE[0]}" -- "$@")"
 usage () {
-    echo "Usage:   ${BASH_SOURCE[0]} [OPTIONS] [DEVICE] [on|off]"
+    echo "Usage:   ${BASH_SOURCE[0]} [OPTIONS] [on|off]"
     echo "Enable/disable bluetooth device"
     echo ""
     echo "Options:"
@@ -29,13 +29,6 @@ if [[ "$#" -gt 2 ]]; then
     exit 1
 fi
 
-# Check installed
-if ! command -v bluetoothctl &> /dev/null ; then
-    if [ "$(id -u)" -ne 0 ]; then
-        sudo -p "sudo required; enter password: " sudo apt install -y bluez
-    fi
-fi
-
 # Defining HEREDOCS "almost just like" Ruby
 # http://ss64.com/bash/read.html
 # http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
@@ -45,11 +38,12 @@ fi
 # EOF
 heredoc(){ IFS=$'\n' read -r -d '' "${1}" || true; }
 
-heredoc DISABLE <<EOF
+
+heredoc LINUX_DISABLE <<EOF
     disconnect "$DEVICE"
     quit
 EOF
-heredoc ENABLE <<EOF
+heredoc LINUX_ENABLE <<EOF
     power on
     pair "$DEVICE"
     trust "$DEVICE"
@@ -57,8 +51,62 @@ heredoc ENABLE <<EOF
     quit
 EOF
 
-if [[ "$#" -eq 1 ]] && [[ "$1" == "off" ]]; then
-    echo "$DISABLE" | bluetoothctl &>/dev/null
-else
-    echo "$ENABLE"  | bluetoothctl &>/dev/null
-fi
+handle_linux () {
+    # Check installed
+    if ! command -v bluetoothctl &> /dev/null ; then
+        if [ "$(id -u)" -ne 0 ]; then
+            sudo -p "sudo required; enter password: " sudo apt install -y bluez
+        fi
+    fi
+
+
+    if [[ "$#" -eq 1 ]] && [[ "$1" == "off" ]]; then
+        echo "$LINUX_DISABLE" | bluetoothctl &>/dev/null
+    else
+        echo "$LINUX_ENABLE"  | bluetoothctl &>/dev/null
+    fi
+}
+
+handle_windows () {
+    echo >&2 "ERROR: not implemented"
+    exit 1
+}
+
+handle_osx () {
+    if ! command -v blueutil &> /dev/null ; then
+        brew install blueutil
+    fi
+
+    if [[ "$#" -eq 1 ]] && [[ "$1" == "off" ]]; then
+        blueutil --disconnect "$DEVICE"
+    else
+        blueutil --connect "$DEVICE"
+    fi
+}
+
+case "$OSTYPE" in
+    darwin*)
+        handle_osx "$@"
+    ;;
+
+    linux*)
+        if [[ $(uname -r) =~ icrosoft ]]; then
+            handle_windows "$@"
+        else
+            handle_linux "$@"
+        fi
+    ;;
+
+    msys*)
+        handle_windows "$@"
+    ;;
+
+    cygwin*)
+        handle_windows "$@"
+    ;;
+
+    *)
+        echo >&2 "ERROR: unknown OS $OSTYPE"
+        exit 1
+    ;;
+esac
