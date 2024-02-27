@@ -236,9 +236,9 @@ defaults write "com.ScooterSoftware.BeyondCompare" "NSUserKeyEquivalents" -dict 
 
 ##############
 # Disk
-##############
 # Avoid SSD wear by configuring noatime at startup
 # https://dpron.com/os-x-noatime-multiple-ssds/
+##############
 if ! mount | rg "/System/Volumes/VM" | rg noatime &>/dev/null ; then
     if sudo --prompt "Enter password to configure 'noatime' for disk" true ; then
         FILE="com.noatime.plist"
@@ -250,3 +250,18 @@ if ! mount | rg "/System/Volumes/VM" | rg noatime &>/dev/null ; then
         echo "Skipping noatime configuration"
     fi
 fi
+
+##############
+# Limits: override maximum file/process limits
+# https://wilsonmar.github.io/maximum-limits/
+##############
+DAEMONS="/Library/LaunchDaemons/"
+for FILENAME in "$HOME/.dotfiles/config/osx/LaunchDaemons/"* ; do
+    BASENAME="$(basename "$FILENAME")"
+    if [[ ! -f "$DAEMONS/$BASENAME" ]]; then
+        sudo cp "$FILENAME" "$DAEMONS/$BASENAME"
+        sudo chown "root:wheel" "$DAEMONS/$BASENAME"
+        sudo launchctl unload "$DAEMONS/$BASENAME" &>/dev/null || true
+        sudo launchctl load -w "$DAEMONS/$BASENAME"
+    fi
+done
