@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Pat's airpods
+DEVICE="fc:b6:d8:d6:98:33" "$SCRIPT_DIR/headphones"

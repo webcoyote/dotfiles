@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# Pat's Shokz OpenRun 2 Pro Mini headphones
+DEVICE="a8-f5-e1-90-09-d3" "$SCRIPT_DIR/headphones"
