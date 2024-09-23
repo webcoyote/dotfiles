@@ -1,10 +1,10 @@
 [diff]
-    tool = araxis
-    #tool = bc
+    #tool = araxis
+    tool = bc
 
 [merge]
-    tool = araxis
-    #tool = bc
+    #tool = araxis
+    tool = bc
 
 [difftool "araxis"]
     path = "/Applications/Araxis Merge.app/Contents/Utilities/compare"
