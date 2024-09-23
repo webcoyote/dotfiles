@@ -124,10 +124,12 @@ Applications=(
     jql                         # JSON query language
     lulu                        # software firewall
     mas                         # Apple Store command line
+    menuwhere                   # keyboard access to menu-walking like in Windows
     microsoft-office            # word/excel
     microsoft-remote-desktop    # visit my old PC
     moreutils                   # ifne/chronic/ts/sponge/vipe/pee
     netcat                      # play with sockets
+    netnewswire                 # feed reader
     procs                       # process list (replaces ps)
     python                      # Python language
     rectangle                   # hotkeys to position windows
@@ -136,11 +138,14 @@ Applications=(
     rm-improved                 # move files to trash instead of deleting
     # rust                      # Rust language -- installed via RustUp below
     sd                          # better sed
+    shellcheck                  # lint for bash
     sk                          # fuzzy interactive file finder
+    spideroakone                # encrypted network file syncing service
     starship                    # console prompt
     steam                       # games
     sublime-text                # better text editor
     tealdeer                    # better tldr
+    thefuck                     # redo last command without the typo
     tokei                       # count lines within files
     tig                         # graphical git commit viewer
     tree                        # show directory tree in terminal
@@ -148,6 +153,8 @@ Applications=(
     wakeonlan                   # wakeup other computers
     wget                        # curl with different defaults
     xh                          # curl/wget replacement
+    yt-dlp                      # YouTube downloader
+    zed                         # text editor
     zoxide                      # directory jumper (replaces z.sh)
 )
 CaskApps=(
