@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# encrypt files with aes-256-cbc cipher using openssl
+set -euo pipefail
+
+
+function usage() {
+    echo "This software uses openssl for encrypting files with the aes-256-cbc cipher"
+    echo "Usage for encrypting: encrypt -e [file]"
+    echo "Usage for decrypting: encrypt -d [file]"
+    exit 0
+}
+
+if [[ $# -lt 2 ]] || [[ $1 == "--help" ]] || [[ $1 == "-h" ]]; then
+    usage
+elif [[ $1 == "-e" ]]; then
+    if [[ -f "$2" ]]; then
+        openssl aes-256-cbc -e -salt -saltlen 256 -in "$2" -out "$2.aes"
+    else
+        echo "The file '$2' does not exist!"
+    fi
+elif [[ $1 == "-d" ]]; then
+    if [[ -f "$2" ]]; then
+        openssl aes-256-cbc -d -salt -saltlen 256 -in "$2" -out "$2.decrypt"
+    else
+        echo "The file '$2' does not exist!"
+    fi
+else
+    echo "This action does not exist!"
+    echo "Use ./encrypt --help to show help."
+fi

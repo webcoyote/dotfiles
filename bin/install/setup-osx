@@ -140,7 +140,6 @@ Applications=(
     sd                          # better sed
     shellcheck                  # lint for bash
     sk                          # fuzzy interactive file finder
-    spideroakone                # encrypted network file syncing service
     starship                    # console prompt
     steam                       # games
     sublime-text                # better text editor
@@ -159,7 +158,7 @@ Applications=(
 )
 CaskApps=(
     discord                     # chat for play
-    scrollreverser              # reverse mouse wheel scrolling
+    scroll-reverser             # reverse mouse wheel scrolling
     slack                       # chat for work
     zoom                        # chat for work
 )
@@ -173,7 +172,7 @@ CargoApps=(
     cargo-update    `: # update cargo packages`
     felix           `: # file explorer`
     teehee          `: # hex editor`
-    watchexec       `: # command runner`
+    watchexec-cli   `: # command runner`
 )
 cargo install "${CargoApps[@]}"
 cargo install-update -a
@@ -186,6 +185,26 @@ if [[ $OSTYPE == 'darwin'* ]]; then
     ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings"     "$HOME/Library/Application Support/Sublime Text/Packages/User/Preferences.sublime-settings"
     ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings" "$HOME/Library/Application Support/Sublime Text/Packages/User/Package Control.sublime-settings"
 fi
+
+##############
+# Git repos
+##############
+function git_clone_repo() {
+    REPO="$1"
+    BRANCH="$2"
+    DIR="$3"
+    if [[ ! -d "$DIR" ]]; then
+        echo >&2 "git clone $(basename "$REPO")"
+        git clone --branch "$BRANCH" "$REPO" "$DIR"
+    else
+        echo >&2 "git update $(basename "$REPO")"
+        pushd "$DIR" >/dev/null
+        git pull --ff-only
+        popd >/dev/null
+    fi
+}
+
+git_clone_repo "https://github.com/webcoyote/VimMode.spoon" "master" "$HOME/.hammerspoon/Spoons/VimMode.spoon"
 
 ##############
 # Keyboard
