@@ -112,6 +112,7 @@ Applications=(
     git                         # yeah, it's the best
     git-delta                   # better pager for git diff
     git-lfs                     # big files
+    ghostty                     # terminal by Mitchell Hashimoto that rocks
     gnu-getopt                  # because OSX getopt is ancient
     gnupg                       # PGP / GPG encryption
     google-chrome               # spyware-riddled web browser
