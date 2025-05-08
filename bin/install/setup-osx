@@ -144,6 +144,8 @@ Applications=(
     starship                    # console prompt
     steam                       # games
     sublime-text                # better text editor
+    swift-quit                  # quit apps with no documents
+    tailscale                   # VPN
     tealdeer                    # better tldr
     thefuck                     # redo last command without the typo
     tokei                       # count lines within files
@@ -248,6 +250,10 @@ defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 37
 ##############
 
 # Override keyboard shortcuts for Araxis Merge so it behaves like WinMerge
+#    "Next Change"                      Opt-Cmd-Down
+#    "Previous Change                   Opt-Cmd-Up
+#    "Push to Left and Replace"         Opt-Cmd-Left
+#    "Push to Right and Replace"        Opt-Cmd-Right
 defaults write "com.araxis.merge" "NSUserKeyEquivalents" -dict  \
     "Next Change" "@~\\U2193"                                   \
     "Previous Change" "@~\\U2191"                               \
@@ -255,6 +261,10 @@ defaults write "com.araxis.merge" "NSUserKeyEquivalents" -dict  \
     "Push to Right and Replace" "@~\\U2192"
 
 # Override keyboard shortcuts for Beyond Compare it behaves like WinMerge
+#    "Next Difference Section"          Opt-Cmd-Down
+#    "Previous Difference Section"      Opt-Cmd-Up
+#    "Copy to Left" "@~\\U2190"         Opt-Cmd-Left
+#    "Copy to Right" "@~\\U2192         Opt-Cmd-Right
 defaults write "com.ScooterSoftware.BeyondCompare" "NSUserKeyEquivalents" -dict \
     "Next Difference Section" "@~\\U2193"                                       \
     "Previous Difference Section" "@~\\U2191"                                   \
