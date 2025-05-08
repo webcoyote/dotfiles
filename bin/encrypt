@@ -14,13 +14,13 @@ if [[ $# -lt 2 ]] || [[ $1 == "--help" ]] || [[ $1 == "-h" ]]; then
     usage
 elif [[ $1 == "-e" ]]; then
     if [[ -f "$2" ]]; then
-        openssl aes-256-cbc -e -salt -saltlen 256 -in "$2" -out "$2.aes"
+        openssl aes-256-cbc -e -salt -saltlen 256 -pbkdf2 -in "$2" -out "$2.aes"
     else
         echo "The file '$2' does not exist!"
     fi
 elif [[ $1 == "-d" ]]; then
     if [[ -f "$2" ]]; then
-        openssl aes-256-cbc -d -salt -saltlen 256 -in "$2" -out "$2.decrypt"
+        openssl aes-256-cbc -d -salt -saltlen 256 -pbkdf2 -in "$2" -out "$2.decrypt"
     else
         echo "The file '$2' does not exist!"
     fi
