@@ -93,8 +93,6 @@ fi
 # Install applications
 ##############
 Applications=(
-    1password                   # password management
-    alt-tab                     # use Option-Tab as a better Alt-Tab
     atuin                       # better shell history
     bash                        # replace OSX bash 3.2 with something modern
     bat                         # better cat
@@ -102,67 +100,67 @@ Applications=(
     bottom                      # CPU graph (replaces top)
     coreutils                   # replace old BSD command-line tools with GNU
     direnv                      # per-directory environment
-    dotnet-sdk                  # C# language
     eza                         # better ls
     fd                          # better than unix `find`
     findutils                   # includes gxargs with the '-r' option
-    firefox                     # low market-share browser
     fzf                         # fuzzy file-finder
     gh                          # github command-line
     git                         # yeah, it's the best
     git-delta                   # better pager for git diff
     git-lfs                     # big files
-    ghostty                     # terminal by Mitchell Hashimoto that rocks
     gnu-getopt                  # because OSX getopt is ancient
     gnupg                       # PGP / GPG encryption
-    google-chrome               # spyware-riddled web browser
     grex                        # generate regex from user-provided test cases
-    hammerspoon                 # OS automation
-    iina                        # media player
-    iterm2                      # terminal
     jless                       # JSON viewer
     jq                          # mangle JSON from the command line
     jql                         # JSON query language
-    lulu                        # software firewall
     mas                         # Apple Store command line
-    menuwhere                   # keyboard access to menu-walking like in Windows
-    microsoft-office            # word/excel
-    microsoft-remote-desktop    # visit my old PC
     moreutils                   # ifne/chronic/ts/sponge/vipe/pee
     netcat                      # play with sockets
-    netnewswire                 # feed reader
     procs                       # process list (replaces ps)
     python                      # Python language
-    rectangle                   # hotkeys to position windows
     rg                          # better grep
     ripsecrets                  # avoid committing secrets to git
-    rm-improved                 # move files to trash instead of deleting
-    # rust                      # Rust language -- installed via RustUp below
     sd                          # better sed
     shellcheck                  # lint for bash
     sk                          # fuzzy interactive file finder
     starship                    # console prompt
-    steam                       # games
-    sublime-text                # better text editor
-    swift-quit                  # quit apps with no documents
-    tailscale                   # VPN
     tealdeer                    # better tldr
-    thefuck                     # redo last command without the typo
     tokei                       # count lines within files
     tig                         # graphical git commit viewer
     tree                        # show directory tree in terminal
-    visual-studio-code          # development environment
     wakeonlan                   # wakeup other computers
     wget                        # curl with different defaults
     xh                          # curl/wget replacement
     yt-dlp                      # YouTube downloader
-    zed                         # text editor
     zoxide                      # directory jumper (replaces z.sh)
 )
 CaskApps=(
+    1password                   # password management
+    alt-tab                     # use Option-Tab as a better Alt-Tab
     discord                     # chat for play
+    dotnet-sdk                  # C# language
+    firefox                     # low market-share browser
+    ghostty                     # terminal by Mitchell Hashimoto that rocks
+    google-chrome               # spyware-riddled web browser
+    hammerspoon                 # OS automation
+    iina                        # media player
+    iterm2                      # terminal
+    lulu                        # software firewall
+    menuwhere                   # keyboard access to menu-walking like in Windows
+    microsoft-office            # word/excel
+    netnewswire                 # feed reader
+    rectangle                   # hotkeys to position windows
     scroll-reverser             # reverse mouse wheel scrolling
     slack                       # chat for work
+    steam                       # games
+    sublime-text                # better text editor
+    swift-quit                  # quit apps with no documents
+    tailscale                   # VPN
+    visual-studio-code          # development environment
+    vivaldi                     # chrome-based web browser that supports UBlock Origin
+    windows-app                 # remote desktop
+    zed                         # text editor
     zoom                        # chat for work
 )
 brew install "${Applications[@]}"

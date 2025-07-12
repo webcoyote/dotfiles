@@ -6,7 +6,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     exit 1
 fi
 
-export PATH=$HOME/bin:$HOME/.cargo/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.cargo/bin:$HOME/.gem/bin:$HOME/flutter/bin:/usr/local/bin:$PATH
 
 if command -v brew &>/dev/null ; then
     PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
@@ -180,6 +180,11 @@ fi
 # GNU getopt for OSX
 if [[ -x "/opt/homebrew/opt/gnu-getopt/bin" ]]; then
     export PATH="/opt/homebrew/opt/gnu-getopt/bin:$PATH"
+fi
+
+# rbenv for ruby
+if command -v rbenv &>/dev/null ; then
+    eval "$(rbenv init - zsh)"
 fi
 
 ##############
