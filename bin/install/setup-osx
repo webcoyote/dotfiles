@@ -128,7 +128,6 @@ Applications=(
     tealdeer                    # better tldr
     tokei                       # count lines within files
     tig                         # graphical git commit viewer
-    tree                        # show directory tree in terminal
     wakeonlan                   # wakeup other computers
     wget                        # curl with different defaults
     xh                          # curl/wget replacement

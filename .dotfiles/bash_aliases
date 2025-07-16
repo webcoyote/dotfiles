@@ -39,13 +39,14 @@ alias cd=pushd
 
 # utilities
 command -v bat   &>/dev/null && alias cat='bat --paging=never'
-command -v eza   &>/dev/null && alias ls=eza || alias ls='ls --color=tty'
-command -v rip   &>/dev/null && mkdir -p "$HOME/.Trash" && export GRAVEYARD="$HOME/.Trash"
+command -v eza   &>/dev/null && alias ls=eza
 
 # ls
-alias l='ls -l'
-alias ll='ls -al'
-alias lh='ls -lh'
+alias l='ls -l --git'
+alias li='ls -l --git --git-ignore'
+alias ll='ls -al --git'
+alias lli='ls -al --git --git-ignore'
+alias tree='ls -lT --git'
 
 # git
 if [[ "$OSTYPE" == "darwin"* ]]; then
