@@ -23,6 +23,7 @@ export HISTIGNORE="ls:ll:exit:gst:pu:po:pushd:popd"
 export GPG_TTY=$(tty)
 
 # misc aliases
+alias c=claude
 alias d=docker
 alias less='less -R'
 
@@ -181,11 +182,6 @@ fi
 # GNU getopt for OSX
 if [[ -x "/opt/homebrew/opt/gnu-getopt/bin" ]]; then
     export PATH="/opt/homebrew/opt/gnu-getopt/bin:$PATH"
-fi
-
-# rbenv for ruby
-if command -v rbenv &>/dev/null ; then
-    eval "$(rbenv init - zsh)"
 fi
 
 ##############

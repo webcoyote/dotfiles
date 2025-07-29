@@ -128,6 +128,7 @@ Applications=(
     tealdeer                    # better tldr
     tokei                       # count lines within files
     tig                         # graphical git commit viewer
+    uv                          # python package manager
     wakeonlan                   # wakeup other computers
     wget                        # curl with different defaults
     xh                          # curl/wget replacement
@@ -209,6 +210,17 @@ git_clone_repo "https://github.com/webcoyote/VimMode.spoon" "master" "$HOME/.ham
 ##############
 # Keyboard
 ##############
+
+# Setup XCode to save builds into the project directory, which is important when
+# using git worktrees so the different trees don't build into the same global
+# directories:
+
+# defaults read com.apple.dt.Xcode | grep -E "IDECustom|LocationStyle"
+#defaults write com.apple.dt.Xcode IDEBuildLocationStyle Custom
+#defaults write com.apple.dt.Xcode IDECustomBuildIntermediatesPath "Build/Intermediates.noindex"
+#defaults write com.apple.dt.Xcode IDECustomBuildLocationType RelativeToWorkspace
+#defaults write com.apple.dt.Xcode IDECustomBuildProductsPath "Build/Products"
+#defaults delete com.apple.dt.Xcode IDECustomDerivedDataLocation
 
 # Disable F11 for Mission Control "Show Desktop"
 # - still manually requires turning off F11 in the keyboard shortcuts app
