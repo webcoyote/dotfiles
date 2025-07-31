@@ -1,10 +1,21 @@
 #!/usr/bin/env bash
-#
 # Bash utility functions
 # by Patrick Wyatt
-# halt on errors, undefined variables and pipe failures
+
+# Exit this script without killing the shell
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && exit || return
+
+# Standard shell script startup
 set -euo pipefail
-BASHFUL_VERSION=0.0.1
+trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Time scripts
+START_TIME=$(date +%s.%N)
+# ... work
+END_TIME=$(date +%s.%N)
+ELAPSED_TIME=$(echo "$END_TIME - $START_TIME" | bc --mathlib | xargs printf "%.2f\n")
+echo "✅ Build completed in $ELAPSED_TIME seconds!"
 
 
 # Print with colors
