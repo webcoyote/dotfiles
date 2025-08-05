@@ -7,6 +7,11 @@ warn () {
   echo >&2 -e "\033[33m$*\033[0m"
 }
 
+if [[ "$(uname -s)" != "Linux" ]]; then
+    warn "ERROR: Not running on Linux"
+    exit 1
+fi
+
 readonly PACKAGES=(
     apt-file                # what files does an apt-package include?
     at                      # run command at time

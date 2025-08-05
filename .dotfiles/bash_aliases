@@ -15,6 +15,9 @@ fi
 # The only reliably cross-platform editor
 export EDITOR=vi
 
+# No dotnet spying
+DOTNET_CLI_TELEMETRY_OPTOUT=1
+
 # Shell history
 export HISTCONTROL=ignoredups:erasedups:ignorespace
 export HISTIGNORE="ls:ll:exit:gst:pu:po:pushd:popd"

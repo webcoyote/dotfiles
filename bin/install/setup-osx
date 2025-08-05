@@ -86,7 +86,7 @@ defaults write com.apple.CrashReporter DialogType none
 if ! command -v brew &> /dev/null ; then
     /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
-    brew update && brew upgrade
+    brew update --quiet && brew upgrade --quiet
 fi
 
 ##############
@@ -128,6 +128,7 @@ Applications=(
     tealdeer                    # better tldr
     tokei                       # count lines within files
     tig                         # graphical git commit viewer
+    tmux                        # terminal multiplexer
     uv                          # python package manager
     wakeonlan                   # wakeup other computers
     wget                        # curl with different defaults
@@ -163,20 +164,19 @@ CaskApps=(
     zed                         # text editor
     zoom                        # chat for work
 )
-brew install "${Applications[@]}"
-brew install --cask "${CaskApps[@]}"
+brew install --quiet "${Applications[@]}"
+brew install --quiet --cask "${CaskApps[@]}"
 
 # Rust can be installed via brew, but Wasm targets do not work, so use rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 CargoApps=(
     cargo-update    `: # update cargo packages`
-    felix           `: # file explorer`
     teehee          `: # hex editor`
     watchexec-cli   `: # command runner`
 )
 cargo install "${CargoApps[@]}"
-cargo install-update -a
+cargo install-update --all || true
 
 ##############
 # Configuration
