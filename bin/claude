@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+# Defining HEREDOCS "almost just like" Ruby
+# http://ss64.com/bash/read.html
+# http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+# Example:
+# heredoc MESSAGE << EOF
+#    your favorite text here
+# EOF
+heredoc(){ IFS=$'\n' read -r -d '' "${1}" || true; }
+
+warn () {
+  echo >&2 -e "\033[33m$*\033[0m"
+}
+
+heredoc DEFAULT_PROMPT << EOF
+    Never use pleasantries, validation, or congratulatory language
+EOF
+
+DIRECTORY="$(git rev-parse --show-toplevel 2>/dev/null)" || DIRECTORY="$HOME"
+cd "$DIRECTORY"
+warn "Running claude in ${DIRECTORY/#$HOME/\~} with --dangerously-skip-permissions"
+
+"$(brew --prefix)/bin/claude" \
+  --dangerously-skip-permissions \
+  --append-system-prompt "${PROMPT:-$DEFAULT_PROMPT}" \
+  "$@"
