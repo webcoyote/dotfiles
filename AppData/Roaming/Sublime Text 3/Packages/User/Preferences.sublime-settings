@@ -9,4 +9,11 @@
     "update_check": false,
     "vintage_start_in_command_mode": true,
     "index_files": false,
+    "folder_exclude_patterns": [
+        ".git",
+        "worktrees",
+        "node_modules",
+        ".wrangler",
+        "dist"
+    ],
 }

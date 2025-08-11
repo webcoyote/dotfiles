@@ -50,3 +50,6 @@ window-height=60
 
 font-size=24
 
+# For Claude Code, send "newline" on shift-enter
+keybind = shift+enter=text:\n
+
