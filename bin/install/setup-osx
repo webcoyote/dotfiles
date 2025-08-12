@@ -52,6 +52,9 @@ defaults write -g AppleKeyboardUIMode -int 3
 # Try holding down ‘e’ to see this in action. If you want to instead repeat characters when a key is held:
 defaults write -g ApplePressAndHoldEnabled -bool false
 
+# disable Cmd-M as minimize window by assigning it to "Center"
+defaults write -g NSUserKeyEquivalents -dict-add "Center" "@m"
+
 ##############
 # Finder
 ##############
