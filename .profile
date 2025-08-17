@@ -54,7 +54,7 @@ fi
 #fi
 
 # Add my bin directories
-PATH="$HOME/bin:$HOME/.cargo/bin:$PATH"
+PATH="$HOME/bin:$PATH"
 
 # Disable dotnet telemetry
 export DOTNET_CLI_TELEMETRY_OPTOUT=1

@@ -29,7 +29,7 @@ def generate_completion_message():
     # Clean up names for better readability
     project_name = re.sub(r'[-_]', ' ', project_name)
     branch = re.sub(r'[-_]', ' ', branch) if branch else ""
-    branch_text = f" on branch {branch}" if branch else ""
+    branch_text = f" on branch {branch}" if branch and branch != "main" else ""
     
     # Random completion messages
     messages = [
