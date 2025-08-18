@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 if [[ $OSTYPE != 'darwin'* ]]; then
     echo >&2 "ERROR: this script is for Mac OSX"
@@ -15,11 +16,13 @@ fi
 # - terminal application is bad. Solution: Iterm.app
 # - hard to tell which window is active: HammerSpoon.app + custom config (but still kinda suxor)
 
+
 ##############
 # Annoyances
 ##############
 # Disable the sound effects on boot
 #sudo nvram SystemAudioVolume=" "
+
 
 ##############
 # Create SSH key
@@ -28,10 +31,11 @@ if [[ ! -f "$HOME/.ssh/id_ed25519" ]]; then
     ssh-keygen -t ed25519 -a 100 </dev/null
 fi
 
+
 ##############
 # All Applications
 ##############
-# Expand save panel by default
+# Expand save dialog by default
 defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
 
 # Save to disk (not to iCloud) by default
@@ -54,6 +58,80 @@ defaults write -g ApplePressAndHoldEnabled -bool false
 
 # disable Cmd-M as minimize window by assigning it to "Center"
 defaults write -g NSUserKeyEquivalents -dict-add "Center" "@m"
+
+# Set Cmd-Escape for "menu walk" AKA "Move focus to the menu bar"
+# For hotkey ID 7, enable it as a standard shortcut with no ASCII value, using
+# physical key 53 (Escape) with modifier 1048576 (Command)"
+# Claude says: "And that's why everyone hates this system!"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 7 "
+  <dict>
+    <key>enabled</key><true/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>53</integer>
+        <integer>1048576</integer>
+      </array>
+    </dict>
+  </dict>
+"
+
+# Disable F11 for Mission Control "Show Desktop"
+# - still manually requires turning off F11 in the keyboard shortcuts app
+# https://www.isi.edu/~calvin/mac-missioncontrolshortcuts.htm
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 36 "
+  <dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>65535</integer>
+        <integer>0</integer>
+      </array>
+    </dict>
+  </dict>
+"
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 37 "
+  <dict>
+    <key>enabled</key><false/>
+    <key>value</key><dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>65535</integer>
+        <integer>65535</integer>
+        <integer>0</integer>
+      </array>
+    </dict>
+  </dict>
+"
+
+# Override keyboard shortcuts for Araxis Merge so it behaves like WinMerge
+#    "Next Change"                      Opt-Cmd-Down
+#    "Previous Change                   Opt-Cmd-Up
+#    "Push to Left and Replace"         Opt-Cmd-Left
+#    "Push to Right and Replace"        Opt-Cmd-Right
+defaults write "com.araxis.merge" "NSUserKeyEquivalents" -dict  \
+    "Next Change" "@~\\U2193"                                   \
+    "Previous Change" "@~\\U2191"                               \
+    "Push to Left and Replace" "@~\\U2190"                      \
+    "Push to Right and Replace" "@~\\U2192"
+
+# Override keyboard shortcuts for Beyond Compare it behaves like WinMerge
+#    "Next Difference Section"          Opt-Cmd-Down
+#    "Previous Difference Section"      Opt-Cmd-Up
+#    "Copy to Left" "@~\\U2190"         Opt-Cmd-Left
+#    "Copy to Right" "@~\\U2192         Opt-Cmd-Right
+defaults write "com.ScooterSoftware.BeyondCompare" "NSUserKeyEquivalents" -dict \
+    "Next Difference Section" "@~\\U2193"                                       \
+    "Previous Difference Section" "@~\\U2191"                                   \
+    "Copy to Left" "@~\\U2190"                                                  \
+    "Copy to Right" "@~\\U2192"
+
 
 ##############
 # Finder
@@ -95,97 +173,95 @@ fi
 ##############
 # Install applications
 ##############
-Applications=(
-    atuin                       # better shell history
-    bash                        # replace OSX bash 3.2 with something modern
-    bat                         # better cat
-    blueutil                    # bluetooth from the command line
-    bottom                      # CPU graph (replaces top)
-    coreutils                   # replace old BSD command-line tools with GNU
-    direnv                      # per-directory environment
-    eza                         # better ls
-    fd                          # better than unix `find`
-    findutils                   # includes gxargs with the '-r' option
-    fzf                         # fuzzy file-finder
-    gh                          # github command-line
-    git                         # yeah, it's the best
-    git-delta                   # better pager for git diff
-    git-lfs                     # big files
-    gnu-getopt                  # because OSX getopt is ancient
-    gnupg                       # PGP / GPG encryption
-    grex                        # generate regex from user-provided test cases
-    jless                       # JSON viewer
-    jq                          # mangle JSON from the command line
-    jql                         # JSON query language
-    mas                         # Apple Store command line
-    moreutils                   # ifne/chronic/ts/sponge/vipe/pee
-    netcat                      # play with sockets
-    procs                       # process list (replaces ps)
-    python                      # Python language
-    rg                          # better grep
-    ripsecrets                  # avoid committing secrets to git
-    sd                          # better sed
-    shellcheck                  # lint for bash
-    sk                          # fuzzy interactive file finder
-    starship                    # console prompt
-    tealdeer                    # better tldr
-    tokei                       # count lines within files
-    tig                         # graphical git commit viewer
-    tmux                        # terminal multiplexer
-    uv                          # python package manager
-    wakeonlan                   # wakeup other computers
-    wget                        # curl with different defaults
-    xh                          # curl/wget replacement
-    yt-dlp                      # YouTube downloader
-    zoxide                      # directory jumper (replaces z.sh)
-)
-CaskApps=(
-    1password                   # password management
-    alt-tab                     # use Option-Tab as a better Alt-Tab
-    discord                     # chat for play
-    dotnet-sdk                  # C# language
-    firefox                     # low market-share browser
-    ghostty                     # terminal by Mitchell Hashimoto that rocks
-    google-chrome               # spyware-riddled web browser
-    hammerspoon                 # OS automation
-    iina                        # media player
-    iterm2                      # terminal
-    lulu                        # software firewall
-    menuwhere                   # keyboard access to menu-walking like in Windows
-    microsoft-office            # word/excel
-    netnewswire                 # feed reader
-    rectangle                   # hotkeys to position windows
-    scroll-reverser             # reverse mouse wheel scrolling
-    slack                       # chat for work
-    steam                       # games
-    sublime-text                # better text editor
-    swift-quit                  # quit apps with no documents
-    tailscale                   # VPN
-    visual-studio-code          # development environment
-    vivaldi                     # chrome-based web browser that supports UBlock Origin
-    windows-app                 # remote desktop
-    zed                         # text editor
-    zoom                        # chat for work
-)
-brew install --quiet "${Applications[@]}"
+BrewApps=()
+BrewApps+=(atuin)               # better shell history
+BrewApps+=(bash)                # replace OSX bash 3.2 with something modern
+BrewApps+=(bat)                 # better cat
+BrewApps+=(blueutil)            # bluetooth from the command line
+BrewApps+=(bottom)              # CPU graph (replaces top)
+BrewApps+=(coreutils)           # replace old BSD command-line tools with GNU
+BrewApps+=(direnv)              # per-directory environment
+BrewApps+=(eza)                 # better ls
+BrewApps+=(fd)                  # better than unix `find`
+BrewApps+=(findutils)           # includes gxargs with the '-r' option
+BrewApps+=(fzf)                 # fuzzy file-finder
+BrewApps+=(gh)                  # github command-line
+BrewApps+=(git)                 # yeah, it's the best
+BrewApps+=(git-delta)           # better pager for git diff
+BrewApps+=(git-lfs)             # big files
+BrewApps+=(gnu-getopt)          # because OSX getopt is ancient
+BrewApps+=(gnupg)               # PGP / GPG encryption
+BrewApps+=(grex)                # generate regex from user-provided test cases
+BrewApps+=(jless)               # JSON viewer
+BrewApps+=(jq)                  # mangle JSON from the command line
+BrewApps+=(jql)                 # JSON query language
+BrewApps+=(mas)                 # Apple Store command line
+BrewApps+=(moreutils)           # ifne/chronic/ts/sponge/vipe/pee
+BrewApps+=(netcat)              # play with sockets
+BrewApps+=(procs)               # process list (replaces ps)
+BrewApps+=(python)              # Python language
+BrewApps+=(rg)                  # better grep
+BrewApps+=(ripsecrets)          # avoid committing secrets to git
+BrewApps+=(sd)                  # better sed
+BrewApps+=(shellcheck)          # lint for bash
+BrewApps+=(sk)                  # fuzzy interactive file finder
+BrewApps+=(starship)            # console prompt
+BrewApps+=(tealdeer)            # better tldr
+BrewApps+=(tokei)               # count lines within files
+BrewApps+=(tig)                 # graphical git commit viewer
+BrewApps+=(tmux)                # terminal multiplexer
+BrewApps+=(uv)                  # python package manager
+BrewApps+=(wakeonlan)           # wakeup other computers
+BrewApps+=(wget)                # curl with different defaults
+BrewApps+=(xh)                  # curl/wget replacement
+BrewApps+=(yt-dlp)              # YouTube downloader
+BrewApps+=(zoxide)              # directory jumper (replaces z.sh)
+brew install --quiet "${BrewApps[@]}"
+
+CaskApps=()
+CaskApps+=(1password)           # password management
+CaskApps+=(alt-tab)             # use Option-Tab as a better Alt-Tab
+CaskApps+=(discord)             # chat for play
+CaskApps+=(dotnet-sdk)          # C# language
+CaskApps+=(firefox)             # low market-share browser
+CaskApps+=(ghostty)             # terminal by Mitchell Hashimoto that rocks
+CaskApps+=(google-chrome)       # spyware-riddled web browser
+CaskApps+=(hammerspoon)         # OS automation
+CaskApps+=(iina)                # media player
+CaskApps+=(iterm2)              # terminal
+CaskApps+=(lulu)                # software firewall
+CaskApps+=(menuwhere)           # keyboard access to menu-walking like in Windows
+CaskApps+=(microsoft-office)    # word/excel
+CaskApps+=(netnewswire)         # feed reader
+CaskApps+=(rectangle)           # hotkeys to position windows
+CaskApps+=(scroll-reverser)     # reverse mouse wheel scrolling
+CaskApps+=(slack)               # chat for work
+CaskApps+=(steam)               # games
+CaskApps+=(sublime-text)        # better text editor
+CaskApps+=(swift-quit)          # quit apps with no documents
+CaskApps+=(tailscale)           # VPN
+CaskApps+=(visual-studio-code)  # development environment
+CaskApps+=(vivaldi)             # chrome-based web browser that supports UBlock Origin
+CaskApps+=(windows-app)         # remote desktop
+CaskApps+=(zed)                 # text editor
+CaskApps+=(zoom)                # chat for work
 brew install --quiet --cask "${CaskApps[@]}"
 
 # Rust can be installed via brew, but Wasm targets do not work, so use rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-CargoApps=(
-    cargo-update    `: # update cargo packages`
-    teehee          `: # hex editor`
-    watchexec-cli   `: # command runner`
-)
+CargoApps=()
+CargoApps+=(cargo-update)       # update cargo packages
+CargoApps+=(teehee)             # hex editor
+CargoApps+=(watchexec-cli)      # command runner
 cargo install "${CargoApps[@]}"
 cargo install-update --all || true
 
 ##############
-# Configuration
+# Sublime text
 ##############
 if [[ $OSTYPE == 'darwin'* ]]; then
-    # Sublime text
+    # Link my Sublime text configuration across Windows/OSX
     ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Preferences.sublime-settings"     "$HOME/Library/Application Support/Sublime Text/Packages/User/Preferences.sublime-settings"
     ln -sf "$HOME/AppData/Roaming/Sublime Text 3/Packages/User/Package Control.sublime-settings" "$HOME/Library/Application Support/Sublime Text/Packages/User/Package Control.sublime-settings"
 fi
@@ -209,79 +285,6 @@ function git_clone_repo() {
 }
 
 git_clone_repo "https://github.com/webcoyote/VimMode.spoon" "master" "$HOME/.hammerspoon/Spoons/VimMode.spoon"
-
-##############
-# Keyboard
-##############
-
-# Setup XCode to save builds into the project directory, which is important when
-# using git worktrees so the different trees don't build into the same global
-# directories:
-
-# defaults read com.apple.dt.Xcode | grep -E "IDECustom|LocationStyle"
-#defaults write com.apple.dt.Xcode IDEBuildLocationStyle Custom
-#defaults write com.apple.dt.Xcode IDECustomBuildIntermediatesPath "Build/Intermediates.noindex"
-#defaults write com.apple.dt.Xcode IDECustomBuildLocationType RelativeToWorkspace
-#defaults write com.apple.dt.Xcode IDECustomBuildProductsPath "Build/Products"
-#defaults delete com.apple.dt.Xcode IDECustomDerivedDataLocation
-
-# Disable F11 for Mission Control "Show Desktop"
-# - still manually requires turning off F11 in the keyboard shortcuts app
-# https://www.isi.edu/~calvin/mac-missioncontrolshortcuts.htm
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 36 "
-  <dict>
-    <key>enabled</key><false/>
-    <key>value</key><dict>
-      <key>type</key><string>standard</string>
-      <key>parameters</key>
-      <array>
-        <integer>65535</integer>
-        <integer>65535</integer>
-        <integer>0</integer>
-      </array>
-    </dict>
-  </dict>
-"
-defaults write com.apple.symbolichotkeys.plist AppleSymbolicHotKeys -dict-add 37 "
-  <dict>
-    <key>enabled</key><false/>
-    <key>value</key><dict>
-      <key>type</key><string>standard</string>
-      <key>parameters</key>
-      <array>
-        <integer>65535</integer>
-        <integer>65535</integer>
-        <integer>0</integer>
-      </array>
-    </dict>
-  </dict>
-    "
-
-##############
-# App Shortcuts
-##############
-
-# Override keyboard shortcuts for Araxis Merge so it behaves like WinMerge
-#    "Next Change"                      Opt-Cmd-Down
-#    "Previous Change                   Opt-Cmd-Up
-#    "Push to Left and Replace"         Opt-Cmd-Left
-#    "Push to Right and Replace"        Opt-Cmd-Right
-defaults write "com.araxis.merge" "NSUserKeyEquivalents" -dict  \
-    "Next Change" "@~\\U2193"                                   \
-    "Previous Change" "@~\\U2191"                               \
-    "Push to Left and Replace" "@~\\U2190"                      \
-    "Push to Right and Replace" "@~\\U2192"
-
-# Override keyboard shortcuts for Beyond Compare it behaves like WinMerge
-#    "Next Difference Section"          Opt-Cmd-Down
-#    "Previous Difference Section"      Opt-Cmd-Up
-#    "Copy to Left" "@~\\U2190"         Opt-Cmd-Left
-#    "Copy to Right" "@~\\U2192         Opt-Cmd-Right
-defaults write "com.ScooterSoftware.BeyondCompare" "NSUserKeyEquivalents" -dict \
-    "Next Difference Section" "@~\\U2193"                                       \
-    "Previous Difference Section" "@~\\U2191"                                   \
-    "Copy to Left" "@~\\U2190"                                                  \
-    "Copy to Right" "@~\\U2192"
 
 ##############
 # Disk

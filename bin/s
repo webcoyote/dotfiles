@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+set -euo pipefail
+trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+# Add to the existing window
+ARGS=("--add" "--")
+
+# If we're in a repository then open the directory as well
+if GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" ; then
+    ARGS+=("$GIT_ROOT")
+fi
 
 # Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
 if [[ $(uname -r) =~ icrosoft ]]; then
@@ -8,20 +18,16 @@ else
 fi
 
 case "$MY_OSTYPE" in
-    darwin*)
-        exec /opt/homebrew/bin/subl "$@"
-    ;;
-
-    linux*)
-        exec subl "$@" </dev/null >/dev/null 2>&1
+    darwin*|linux*)
+        exec subl "${ARGS[@]}" "$@"
     ;;
 
     msys*)
-        "/c/Program Files/Sublime Text 3/subl.exe" "$@" </dev/null >/dev/null 2>&1 &
+        "/c/Program Files/Sublime Text 3/subl.exe" "${ARGS[@]}" "$@" </dev/null >/dev/null 2>&1 &
     ;;
 
     cygwin*)
-        "/mnt/c/Program Files/Sublime Text 3/subl.exe" "$@" </dev/null >/dev/null 2>&1 &
+        "/mnt/c/Program Files/Sublime Text 3/subl.exe" "${ARGS[@]}" "$@" </dev/null >/dev/null 2>&1 &
     ;;
 
     wsl*)
@@ -40,7 +46,7 @@ case "$MY_OSTYPE" in
                 file="$(realpath -P "$file")"
 
                 pushd "$(dirname "$file")" &>/dev/null || exit
-                "/mnt/c/Program Files/Sublime Text 3/subl.exe" "$(basename "$file")" </dev/null >/dev/null 2>&1 &
+                "/mnt/c/Program Files/Sublime Text 3/subl.exe" "${ARGS[@]}" "$(basename "$file")" </dev/null >/dev/null 2>&1 &
                 popd &>/dev/null || exit
             fi
         done
