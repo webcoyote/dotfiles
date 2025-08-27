@@ -23,3 +23,6 @@ typeset -U path
 
 # aliases for bash/zsh
 [[ -f "$HOME/.dotfiles/bash_aliases" ]] && source "$HOME/.dotfiles/bash_aliases"
+
+# NPM completions
+[[ -f "$HOME/.dotfiles/npm_completions" ]] && source "$HOME/.dotfiles/npm_completions"

@@ -2,11 +2,14 @@
 set -euo pipefail
 trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
 
-# Add to the existing window
-ARGS=("--add" "--")
+ARGS=()
 
-# If we're in a repository then open the directory as well
-if GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" ; then
+PROJECT="$PWD/$(basename "$PWD").sublime-project"
+if [[ -f "$PROJECT" ]]; then
+    # If there is a project open the project
+    ARGS+=("--project" "$PROJECT")
+elif GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" ; then
+    # If we're in a repository then open the directory as well
     ARGS+=("$GIT_ROOT")
 fi
 

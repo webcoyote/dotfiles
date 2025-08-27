@@ -14,6 +14,8 @@
         "worktrees",
         "node_modules",
         ".wrangler",
-        "dist"
+        "dist",
+        "cache"
     ],
+    "file_exclude_patterns": ["*.jsonl"]
 }
