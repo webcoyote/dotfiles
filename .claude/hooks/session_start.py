@@ -27,12 +27,6 @@ except ImportError:
     pass  # dotenv is optional
 
 
-
-
-
-
-
-
 def load_development_context(source):
     """Load relevant development context based on session source."""
     context_parts = []
