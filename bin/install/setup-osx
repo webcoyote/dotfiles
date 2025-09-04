@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
 
 if [[ $OSTYPE != 'darwin'* ]]; then
     echo >&2 "ERROR: this script is for Mac OSX"
@@ -198,6 +198,8 @@ BrewApps+=(jql)                 # JSON query language
 BrewApps+=(mas)                 # Apple Store command line
 BrewApps+=(moreutils)           # ifne/chronic/ts/sponge/vipe/pee
 BrewApps+=(netcat)              # play with sockets
+BrewApps+=(node)                # NodeJS
+BrewApps+=(pnpm)                # NodeJS package manager (faster than npm)
 BrewApps+=(procs)               # process list (replaces ps)
 BrewApps+=(python)              # Python language
 BrewApps+=(rg)                  # better grep
