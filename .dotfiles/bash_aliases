@@ -29,6 +29,7 @@ export GPG_TTY=$(tty)
 export TERM=xterm-256color
 
 # misc aliases
+alias clod="$HOME/personal/clodpod/clod --no-graphics"
 alias c=claude
 alias d=docker
 alias p=podman

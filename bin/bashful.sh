@@ -8,7 +8,7 @@
 # Standard shell script startup
 set -euo pipefail
 trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
 
 # Time scripts
 START_TIME=$(date +%s.%N)
