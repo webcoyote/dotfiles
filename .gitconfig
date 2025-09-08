@@ -30,7 +30,7 @@
 	mergeoptions = --no-ff --no-commit
 	trustctime = false
 	filemode = false
-	excludesfile = ~/.gitignore_global
+	excludesfile = ~/.dotfiles/gitignore-global
 [init]
 	defaultBranch = main
 [pull]
