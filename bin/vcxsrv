@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # by Patrick Wyatt 12/2019
 # MIT License
-# set -euo pipefail ==> Do not use "bash strict mode" because script is sourced
+# set -Eeuo pipefail ==> Do not use "bash strict mode" because script is sourced
 #
 #
 # Source this file from your .bashrc/.zshrc/.profile file to

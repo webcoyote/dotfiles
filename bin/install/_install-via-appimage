@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 # Parse options
 eval set -- "$(getopt -o h --long help -n "${BASH_SOURCE[0]}" -- "$@")"

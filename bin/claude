@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
-trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
 
 # Defining HEREDOCS "almost just like" Ruby
 # http://ss64.com/bash/read.html

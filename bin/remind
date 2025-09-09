@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Nice reminders
 # Thanks to http://paulwhippconsulting.com/blog/simple-reminders-using-a-bash-script/
-set -euo pipefail
+set -Eeuo pipefail
 
 # Parse command-line
 REPEAT=

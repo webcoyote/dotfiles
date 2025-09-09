@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 # for path in "$(echo $PATH | tr : \\n)" ; do
 export IFS=":"

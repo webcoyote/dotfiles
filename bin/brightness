@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # from https://askubuntu.com/a/951339 with error checking added
-set -euo pipefail
+set -Eeuo pipefail
 
 if ! command -v xrandr &>/dev/null ; then
     echo >&2 "ERROR: xrandr not installed"

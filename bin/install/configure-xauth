@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 # Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
 if [[ $(uname -r) =~ icrosoft ]]; then

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 IFS=$'\n\t'
 
 # Require sudo
 if [ "$(id -u)" -ne 0 ]; then
-  exec sudo -p "Restarting with sudo; enter password: " /usr/bin/env bash "$0" "$@"
+  exec sudo -p "Restarting with sudo; enter password: " /usr/bin/env bash "${BASH_SOURCE[0]}" "$@"
 fi
 
 # Defining HEREDOCS "almost just like" Ruby

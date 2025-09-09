@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 if [[ $(uname -r) =~ icrosoft ]]; then
     cd "$@" && explorer.exe .

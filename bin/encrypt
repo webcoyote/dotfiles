@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # encrypt files with aes-256-cbc cipher using openssl
-set -euo pipefail
+set -Eeuo pipefail
 
 
 function usage() {

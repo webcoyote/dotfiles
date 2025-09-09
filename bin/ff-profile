@@ -2,7 +2,7 @@
 # This script runs FireFox with the specified
 # PROFILE, or it can create a new one. Very
 # useful for testing with a "vanilla" browser.
-set -euo pipefail
+set -Eeuo pipefail
 
 
 # Use the command-line argument, if it exists,

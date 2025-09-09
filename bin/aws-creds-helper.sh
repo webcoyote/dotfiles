@@ -22,7 +22,7 @@
 #       "Arn": "arn:aws:sts::123456789000:assumed-role/Role-Name-Here/omg"
 #   }
 #
-set -euo pipefail
+set -Eeuo pipefail
 
 if [[ $# != 2 ]]; then
     echo >&2 "USAGE: $(basename ${BASH_SOURCE[0]}) ARN PROFILE"

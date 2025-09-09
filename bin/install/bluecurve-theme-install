@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 NAME="Bluecurve Revival XFCE orange"
 URL="https://dl.opendesktop.org/api/files/download/id/1542613902/s/87812b2ae84125c473896dc2d7bc16038b12ad9bab7e35990d15e4cdd76e63b8200bd436b1a9eccb79f0217d6ecd7e3bbe98464916e0d417506b2cca80bfeb0c/t/1552202118/u//Bluecurve_Revival_XFCE_orange.tar.gz"

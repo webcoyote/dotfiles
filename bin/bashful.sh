@@ -6,9 +6,9 @@
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && exit || return
 
 # Standard shell script startup
-set -euo pipefail
-trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
-SCRIPT_DIR="$(cd "$(dirname "$BASH_SOURCE")" && pwd)"
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Time scripts
 START_TIME=$(date +%s.%N)

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Launch buildkite.com page for this project
-set -euo pipefail
+set -Eeuo pipefail
 
 case "$OSTYPE" in
     linux*)

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 # Configuration
 URL="https://github.com/webcoyote/pbutils/releases/latest/download/pbutils.zip"

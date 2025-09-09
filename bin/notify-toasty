@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Forward notifications to the host machine's native notifier
 # I should get a medal for this hot mess...
-set -euo pipefail
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+set -Eeuo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Strictly check arguments to avoid errors since we're using
 # different notifiers on different platforms.

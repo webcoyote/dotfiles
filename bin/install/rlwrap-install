@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 APP="rlwrap"
 URL="https://github.com/hanslub42/rlwrap"

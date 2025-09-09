@@ -6,9 +6,8 @@
 #
 # The resulting credentials can be pasted into your `$HOME/.aws/credentials file`.
 #
-set -euo pipefail
+set -Eeuo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly SCRIPT_DIR
 
 # This is REALLY LAME, but the fields "aws_access_key_id", "aws_secret_acces_key" and "aws_session_token" must be lowercase
 # or AWSSDK.CORE doesn't parse them Amazon.Runtime.CredentialManagement.AWSCredentialsFactory.GetAWSCredentials(...)

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+set -Eeuo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 APP="bcompare"
 URL="https://www.scootersoftware.com/bcompare-4.2.8.23479_amd64.deb"

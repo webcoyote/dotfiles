@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
-trap 'echo "$0: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
 
 ARGS=()
 
@@ -9,8 +9,11 @@ if [[ -f "$PROJECT" ]]; then
     # If there is a project open the project
     ARGS+=("--project" "$PROJECT")
 elif GIT_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" ; then
-    # If we're in a repository then open the directory as well
-    ARGS+=("$GIT_ROOT")
+    # If we're in a repository that isn't the home directory then open the directory.
+    # Opening $HOME causes sublime to show a popup dialog.
+    if [[ "$GIT_ROOT" != "$HOME" ]]; then
+        ARGS+=("$GIT_ROOT")
+    fi
 fi
 
 # Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")

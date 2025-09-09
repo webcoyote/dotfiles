@@ -5,7 +5,7 @@
 # Based on:
 # - https://stackoverflow.com/a/56026209
 # - https://stackoverflow.com/a/49434212
-set -euo pipefail
+set -Eeuo pipefail
 
 # Save current branch
 curr_branch="$(git rev-parse --abbrev-ref HEAD)"

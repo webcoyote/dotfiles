@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Find files with no extension
-set -euo pipefail
+set -Eeuo pipefail
 
 DIRECTORY="${1:-.}"
 shift || true

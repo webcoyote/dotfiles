@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly SCRIPT_DIR
 
 # Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
 if [[ $(uname -r) =~ icrosoft ]]; then

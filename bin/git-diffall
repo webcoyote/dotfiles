@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 # Store workspace root since git diff prints files based on root of project
 WORKSPACE_ROOT=$(git rev-parse --show-toplevel)
@@ -9,11 +9,11 @@ WORKSPACE_ROOT=$(git rev-parse --show-toplevel)
 # read zero-terminated filenames and ignore escape sequences
 # and diff them
 git diff --name-status "$@" | while IFS=$'\t' read -ra tokens ; do
-	# Modified, added, or deleted files
-	if [[ ${tokens[0]} =~ ^[MAD] ]]; then
-		git difftool --no-prompt "$@" -- "${WORKSPACE_ROOT}/${tokens[1]}" &
-	# Renamed files
-	elif [[ ${tokens[0]} =~ ^R ]]; then
-		git difftool --no-prompt "$@" -- "${WORKSPACE_ROOT}/${tokens[1]}" "${WORKSPACE_ROOT}/${tokens[2]}" &
-	fi
+    # Modified, added, or deleted files
+    if [[ ${tokens[0]} =~ ^[MAD] ]]; then
+        git difftool --no-prompt "$@" -- "${WORKSPACE_ROOT}/${tokens[1]}" &
+    # Renamed files
+    elif [[ ${tokens[0]} =~ ^R ]]; then
+        git difftool --no-prompt "$@" -- "${WORKSPACE_ROOT}/${tokens[1]}" "${WORKSPACE_ROOT}/${tokens[2]}" &
+    fi
 done

@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 if [[ "$#" -ne 1 ]]; then
-	echo "Usage:   ${BASH_SOURCE[0]} FILE-TO-FIND"
-	exit 0
+    echo "Usage:   ${BASH_SOURCE[0]} FILE-TO-FIND"
+    exit 0
 fi
 
 FIND="$1"
 git fsck --lost-found | grep commit | awk '{print $3}' | while read -r commit ; do
-	git checkout "$commit" &>/dev/null
-	find . -type f -iname "$FIND" -print0 | while IFS= read -r -d '' ; do
-	    printf 'Found in commit %s\n' "$commit"
-	done
+    git checkout "$commit" &>/dev/null
+    find . -type f -iname "$FIND" -print0 | while IFS= read -r -d '' ; do
+        printf 'Found in commit %s\n' "$commit"
+    done
 done

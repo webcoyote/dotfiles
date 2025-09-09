@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # Inspired by: https://news.ycombinator.com/item?id=18902444
-set -euo pipefail
+set -Eeuo pipefail
 google-chrome --user-data-dir "$(mktemp -d)" </dev/null &>/dev/null & disown

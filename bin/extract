@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Inspired by: https://news.ycombinator.com/item?id=18987485
-set -euo pipefail
+set -Eeuo pipefail
 
 if [[ "$#" -ne 1 ]]; then
     echo "Usage: $(basename "${BASH_SOURCE[0]}") ARCHIVE-NAME"

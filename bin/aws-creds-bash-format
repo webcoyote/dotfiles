@@ -6,9 +6,8 @@
 #
 #   eval $(aws-creds-bash-format "arn:aws:iam::123456789000:role/Role-Name-Here" "omg")
 #
-set -euo pipefail
+set -Eeuo pipefail
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly SCRIPT_DIR
 
 # IMPORTANT: the AWSSDK in dotnet on Windows (and perhaps elsewhere) requires that the keys (e.g. aws_access_key_id) are lowercase
 "$SCRIPT_DIR/aws-creds-helper.sh" "$@" | jq -r ". | \"export aws_access_key_id=\" + .AccessKeyId + \"\nexport aws_secret_access_key=\" + .SecretAccessKey + \"\nexport aws_session_token=\" + .SessionToken + \"\n\""

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+set -Eeuo pipefail
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 EMACS_MAJOR=26
 EMACS_MINOR=1

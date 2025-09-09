@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 curl -s http://whatismyip.akamai.com
 echo

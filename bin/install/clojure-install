@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 APP="clj"
 URL="https://download.clojure.org/install/linux-install-1.10.0.411.sh"
