@@ -23,4 +23,4 @@
 
 # Languages
 
-- Bash: before writing bash scripts, read ~/.claude/personas/BASH.md
+- Bash: before writing bash scripts, read ~/.claude/personas/bash.md
