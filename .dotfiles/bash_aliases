@@ -43,8 +43,8 @@ export GPG_TTY=$(tty)
 export TERM=xterm-256color
 
 # misc aliases
-alias clod="$HOME/personal/sandbox/clodpod/clod --no-graphics"
-alias sv="$HOME/personal/sandbox/sandvault/sv"
+alias clod="/Users/Shared/sandvault-pat/personal/sandbox/clodpod/clod --no-graphics"
+alias sv="/Users/Shared/sandvault-pat/personal/sandbox/sandvault/sv"
 alias c=claude
 alias d=docker
 alias p=podman
@@ -134,37 +134,11 @@ if type -t __git_complete >&/dev/null ; then
     __git_complete tig _git_branch
 fi
 
-# fast directory jumping
-if command -v zoxide &>/dev/null ; then
-    _ZO_DATA_DIR="$HOME/.config"
-    if [[ "$SHELL" == "/bin/zsh" ]]; then
-        eval "$(zoxide init zsh)"
-    else
-        eval "$(zoxide init bash)"
-    fi
-else
-    # https://github.com/rupa/z
-    _Z_DATA="$HOME/.config/z.config"
-    source "$HOME/bin/z.sh"
-fi
-
-# Shell prompt
-if command -v starship &>/dev/null ; then
-    if [[ "$SHELL" == "/bin/zsh" ]]; then
-        eval "$(starship init zsh)"
-    else
-        eval "$(starship init bash)"
-    fi
-fi
-
-# Shell history
-if command -v atuin &>/dev/null ; then
-    if [[ "$SHELL" == "/bin/zsh" ]]; then
-        eval "$(atuin init zsh)"
-    else
-        eval "$(atuin init bash)"
-    fi
-fi
+# Configure shell history, shell jumping, shell prompt
+[[ "$SHELL" == "/bin/zsh" ]] && SHELLNAME=zsh || SHELLNAME=bash
+command -v atuin    &>/dev/null && eval "$(atuin    init "$SHELLNAME")"
+command -v zoxide   &>/dev/null && eval "$(zoxide   init "$SHELLNAME")"
+command -v starship &>/dev/null && eval "$(starship init "$SHELLNAME")"
 
 # Per-directory environment variables
 if command -v direnv &>/dev/null ; then
@@ -178,12 +152,7 @@ if command -v direnv &>/dev/null ; then
             fi
         ;;
     esac
-
-    if [[ "$SHELL" == "/bin/zsh" ]]; then
-        eval "$(direnv hook zsh)"
-    else
-        eval "$(direnv hook bash)"
-    fi
+    eval "$(direnv hook "$SHELLNAME")"
 fi
 
 # fzf: Ctrl-R replacement for Bash
