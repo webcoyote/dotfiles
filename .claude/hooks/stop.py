@@ -47,7 +47,7 @@ def main():
         if args.chat and 'transcript_path' in input_data:
             transcript_path = input_data['transcript_path']
             if os.path.exists(transcript_path):
-                copy_jsonl_file(transcript_path, 'logs/chat.jsonl')
+                copy_jsonl_file(transcript_path, 'chat.jsonl')
 
         # Speak the completion message if available
         display_task_complete()

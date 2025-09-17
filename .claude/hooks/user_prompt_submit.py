@@ -50,31 +50,24 @@ def main():
         parser = argparse.ArgumentParser()
         parser.add_argument('--validate', action='store_true', 
                           help='Enable prompt validation')
-        parser.add_argument('--log-only', action='store_true',
-                          help='Only log prompts, no validation or blocking')
         args = parser.parse_args()
         
         # Read JSON input from stdin
         input_data = json.loads(sys.stdin.read())
         
-        # Extract session_id and prompt
-        session_id = input_data.get('session_id', 'unknown')
+        # Extract prompt
         prompt = input_data.get('prompt', '')
         
         # Log the user prompt using shared utility
         log_to_jsonl(input_data, 'user_prompt_submit.jsonl')
         
-        # Validate prompt if requested and not in log-only mode
-        if args.validate and not args.log_only:
+        # Validate prompt if requested
+        if args.validate
             is_valid, reason = validate_prompt(prompt)
             if not is_valid:
                 # Exit code 2 blocks the prompt with error message
                 print(f"Prompt blocked: {reason}", file=sys.stderr)
                 sys.exit(2)
-        
-        # Add context information (optional)
-        # You can print additional context that will be added to the prompt
-        # Example: print(f"Current time: {datetime.now()}")
         
         # Success - prompt will be processed
         sys.exit(0)

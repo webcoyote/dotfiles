@@ -25,23 +25,9 @@ try:
 except ImportError:
     pass  # dotenv is optional
 
-
-
-
 def announce_notification():
-    """Announce that the agent needs user input."""
-    # Get engineer name if available
-    engineer_name = os.getenv('ENGINEER_NAME', '').strip()
-    
-    # Create notification message with 30% chance to include name
-    if engineer_name and random.random() < 0.3:
-        notification_message = f"{engineer_name}, your agent needs your input"
-    else:
-        notification_message = "Your agent needs your input"
-    
-    # Speak the notification message using shared utility
+    notification_message = "Your agent needs your input"
     speak_text(notification_message)
-
 
 def main():
     try:

@@ -26,14 +26,8 @@ except ImportError:
     pass  # dotenv is optional
 
 
-
-
 def announce_subagent_completion():
-    """Announce subagent completion using the best available TTS service."""
-    # Use fixed message for subagent completion
     completion_message = "Subagent Complete"
-    
-    # Speak the completion message using shared utility
     speak_text(completion_message)
 
 
@@ -58,7 +52,7 @@ def main():
         if args.chat and 'transcript_path' in input_data:
             transcript_path = input_data['transcript_path']
             if os.path.exists(transcript_path):
-                copy_jsonl_file(transcript_path, 'logs/chat.jsonl')
+                copy_jsonl_file(transcript_path, 'chat.jsonl')
 
         # Announce subagent completion via TTS
         announce_subagent_completion()

@@ -47,7 +47,7 @@ def load_development_context(source):
         ".claude/CONTEXT.md",
         ".claude/TODO.md",
         "TODO.md",
-        ".github/ISSUE_TEMPLATE.md"
+        #".github/ISSUE_TEMPLATE.md",
     ]
     
     for file_path in context_files:
@@ -62,10 +62,10 @@ def load_development_context(source):
                 pass
     
     # Add recent issues if available
-    issues = get_recent_github_issues()
-    if issues:
-        context_parts.append("\n--- Recent GitHub Issues ---")
-        context_parts.append(issues)
+    #issues = get_recent_github_issues()
+    #if issues:
+    #    context_parts.append("\n--- Recent GitHub Issues ---")
+    #    context_parts.append(issues)
     
     return "\n".join(context_parts)
 
