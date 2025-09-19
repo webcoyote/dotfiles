@@ -1,0 +1,102 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#     "pyttsx3",
+# ]
+# ///
+
+import os
+import random
+import re
+import subprocess
+import sys
+from typing import Optional, Tuple
+
+def get_git_branch() -> Optional[str]:
+    """
+    Get the current git branch name.
+
+    Returns:
+        Branch name or None if not in a git repository
+    """
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=2
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except (subprocess.TimeoutExpired, subprocess.SubprocessError, FileNotFoundError):
+        pass
+    return None
+
+
+def generate_completion_message() -> str:
+    """
+    Generate a fallback completion message using random selection.
+
+    Returns:
+        str: A randomly selected completion message
+    """
+
+    # Get project and branch information
+    project_name = os.path.basename(os.getcwd())
+    branch = get_git_branch()
+
+    # Clean up names for better readability
+    project_name = re.sub(r'[-_]', ' ', project_name)
+    branch = re.sub(r'[-_]', ' ', branch) if branch else ""
+    branch_text = f" on branch {branch}" if branch and branch != "main" else ""
+
+    # Random completion messages
+    messages = [
+        f"{project_name}{branch_text} is done!",
+        f"{project_name}{branch_text} finished!",
+        f"Completed {project_name}{branch_text}!",
+        f"{project_name}{branch_text} is ready!",
+    ]
+
+    return random.choice(messages)
+
+
+def speak_text(text: str) -> bool:
+    """
+    Speak text using pyttsx3 TTS.
+
+    Args:
+        text: Text to speak
+
+    Returns:
+        True if speech was successful, False otherwise
+    """
+    try:
+        import pyttsx3
+
+        # Initialize TTS engine
+        engine = pyttsx3.init()
+
+        # Configure engine settings
+        engine.setProperty('rate', 180)    # Speech rate (words per minute)
+        engine.setProperty('volume', 0.6)  # Volume (0.0 to 1.0)
+
+        # Speak the text
+        engine.say(text)
+        engine.runAndWait()
+
+        return True
+
+    except Exception:
+        return False
+
+def main():
+    message = generate_completion_message()
+    success = speak_text(message)
+    if not success:
+        print(f"❌ Failed to speak: {notification_message}")
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()
