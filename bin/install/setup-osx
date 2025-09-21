@@ -234,6 +234,7 @@ CaskApps+=(firefox)             # low market-share browser
 CaskApps+=(ghostty)             # terminal by Mitchell Hashimoto that rocks
 CaskApps+=(google-chrome)       # spyware-riddled web browser
 CaskApps+=(hammerspoon)         # OS automation
+CaskApps+=(jordanbaird-ice)     # menubar management
 CaskApps+=(iina)                # media player
 CaskApps+=(iterm2)              # terminal
 CaskApps+=(lulu)                # software firewall

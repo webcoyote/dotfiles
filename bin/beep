@@ -79,7 +79,7 @@ def speak_text(text: str) -> bool:
         engine = pyttsx3.init()
 
         # Configure engine settings
-        engine.setProperty('rate', 180)    # Speech rate (words per minute)
+        engine.setProperty('rate',  200)    # Speech rate (words per minute)
         engine.setProperty('volume', 0.6)  # Volume (0.0 to 1.0)
 
         # Speak the text
