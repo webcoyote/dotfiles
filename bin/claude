@@ -23,7 +23,7 @@ DIR="${DIR:-$(git rev-parse --show-toplevel 2>/dev/null)}" || DIR="$HOME"
 cd "$DIR"
 warn "Running claude in ${DIR/#$HOME/\~} with --dangerously-skip-permissions"
 
-"$HOME/.local/bin/claude" \
+exec "$HOME/.local/bin/claude" \
   --dangerously-skip-permissions \
   --append-system-prompt "${PROMPT:-$DEFAULT_PROMPT}" \
   "$@"
