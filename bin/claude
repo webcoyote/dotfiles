@@ -19,9 +19,9 @@ heredoc DEFAULT_PROMPT << EOF
     Never use pleasantries, validation, or congratulatory language
 EOF
 
-DIRECTORY="$(git rev-parse --show-toplevel 2>/dev/null)" || DIRECTORY="$HOME"
-cd "$DIRECTORY"
-warn "Running claude in ${DIRECTORY/#$HOME/\~} with --dangerously-skip-permissions"
+DIR="${DIR:-$(git rev-parse --show-toplevel 2>/dev/null)}" || DIR="$HOME"
+cd "$DIR"
+warn "Running claude in ${DIR/#$HOME/\~} with --dangerously-skip-permissions"
 
 "$HOME/.local/bin/claude" \
   --dangerously-skip-permissions \
