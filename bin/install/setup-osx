@@ -183,6 +183,7 @@ BrewApps+=(bat)                 # better cat
 BrewApps+=(blueutil)            # bluetooth from the command line
 BrewApps+=(bottom)              # CPU graph (replaces top)
 BrewApps+=(coreutils)           # replace old BSD command-line tools with GNU
+BrewApps+=(deno)                # node replacement; required for yt-dlp
 BrewApps+=(direnv)              # per-directory environment
 BrewApps+=(eza)                 # better ls
 BrewApps+=(fd)                  # better than unix `find`
