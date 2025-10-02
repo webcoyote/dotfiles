@@ -13,15 +13,8 @@ fi
 # - window management isn't as keyboard friendly as Windows. Solution: Rectangle.app
 # - alt-tab only shows apps, not windows. Solution: Alt-Tab.app
 # - BSD terminal apps are years out of date. Solution: brew install coreutils
-# - terminal application is bad. Solution: Iterm.app
+# - terminal application is bad. Solution: Ghostty.app
 # - hard to tell which window is active: HammerSpoon.app + custom config (but still kinda suxor)
-
-
-##############
-# Annoyances
-##############
-# Disable the sound effects on boot
-#sudo nvram SystemAudioVolume=" "
 
 
 ##############
@@ -40,6 +33,10 @@ defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
 
 # Save to disk (not to iCloud) by default
 defaults write -g NSDocumentSaveNewDocumentsToCloud -bool false
+
+# Show all file extensions and files
+defaults write -g AppleShowAllExtensions -bool true
+defaults write -g AppleShowAllFiles -bool true
 
 
 ##############
@@ -148,21 +145,81 @@ defaults write com.apple.finder QuitMenuItem -bool true
 # Set new window location to $HOME directory
 defaults write com.apple.finder NewWindowTarget -string "PfHm"
 
+# Display full POSIX path as Finder window title
+defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+
+# When performing a search, search the current folder by default
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+# Disable the warning when changing a file extension
+defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+
+# Use list view in all Finder windows by default
+# Four-letter codes for the other view modes: `icnv`, `clmv`, `Flwv`
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
 # Avoid creating .DS_Store files on network or USB volumes
 defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
 defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
-# Display full POSIX path as Finder window title
-defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 
 ##############
-# Misc
+# Screensaver
 ##############
-# Hide the dock
+# Require password immediately after sleep or screen saver begins
+defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+
+##############
+# Spotlight
+##############
+defaults write com.apple.spotlight orderedItems -array \
+    '{"enabled" = 1;"name" = "APPLICATIONS";}' \
+    '{"enabled" = 1;"name" = "SYSTEM_PREFS";}' \
+    '{"enabled" = 1;"name" = "DIRECTORIES";}' \
+    '{"enabled" = 0;"name" = "PDF";}' \
+    '{"enabled" = 0;"name" = "FONTS";}' \
+    '{"enabled" = 0;"name" = "DOCUMENTS";}' \
+    '{"enabled" = 0;"name" = "MESSAGES";}' \
+    '{"enabled" = 1;"name" = "CONTACT";}' \
+    '{"enabled" = 1;"name" = "EVENT_TODO";}' \
+    '{"enabled" = 0;"name" = "IMAGES";}' \
+    '{"enabled" = 0;"name" = "BOOKMARKS";}' \
+    '{"enabled" = 0;"name" = "MUSIC";}' \
+    '{"enabled" = 0;"name" = "MOVIES";}' \
+    '{"enabled" = 0;"name" = "PRESENTATIONS";}' \
+    '{"enabled" = 0;"name" = "SPREADSHEETS";}' \
+    '{"enabled" = 0;"name" = "SOURCE";}' \
+    '{"enabled" = 0;"name" = "MENU_DEFINITION";}' \
+    '{"enabled" = 0;"name" = "MENU_OTHER";}' \
+    '{"enabled" = 0;"name" = "MENU_CONVERSION";}' \
+    '{"enabled" = 0;"name" = "MENU_EXPRESSION";}' \
+    '{"enabled" = 0;"name" = "MENU_WEBSEARCH";}' \
+    '{"enabled" = 0;"name" = "MENU_SPOTLIGHT_SUGGESTIONS";}'
+
+
+##############
+# Dock
+##############
+# Configure the dock so it's mostly hidden, and only shows running apps
 defaults write com.apple.dock autohide -bool true && killall Dock
+defaults write com.apple.dock show-recents -bool false
+defaults write com.apple.dock static-only -bool true
+defaults write com.apple.dock persistent-apps -array
+defaults write com.apple.dock persistent-others -array
+defaults write com.apple.dock recent-apps -array
 
+
+##############
+# Crash reporting
+##############
 # Disable crash reporting
 defaults write com.apple.CrashReporter DialogType none
+
 
 ##############
 # Install brew
@@ -172,6 +229,7 @@ if ! command -v brew &> /dev/null ; then
 else
     brew update --quiet && brew upgrade --quiet
 fi
+
 
 ##############
 # Install applications

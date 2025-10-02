@@ -99,14 +99,14 @@ def main():
             print("Use .env.sample for template files instead", file=sys.stderr)
             sys.exit(2)  # Exit code 2 blocks tool call and shows error to Claude
         
-        # Check for dangerous rm -rf commands
-        if tool_name == 'Bash':
-            command = tool_input.get('command', '')
-            
-            # Block rm -rf commands with comprehensive pattern matching
-            if is_dangerous_rm_command(command):
-                print("BLOCKED: Dangerous rm command detected and prevented", file=sys.stderr)
-                sys.exit(2)  # Exit code 2 blocks tool call and shows error to Claude
+#        # Check for dangerous rm -rf commands
+#        if tool_name == 'Bash':
+#            command = tool_input.get('command', '')
+#
+#            # Block rm -rf commands with comprehensive pattern matching
+#            if is_dangerous_rm_command(command):
+#                print("BLOCKED: Dangerous rm command detected and prevented", file=sys.stderr)
+#                sys.exit(2)  # Exit code 2 blocks tool call and shows error to Claude
         
         # Log the pre-tool use event using shared utility
         log_to_jsonl(input_data, 'pre_tool_use.jsonl')
