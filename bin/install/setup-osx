@@ -263,6 +263,7 @@ BrewApps+=(mas)                 # Apple Store command line
 BrewApps+=(moreutils)           # ifne/chronic/ts/sponge/vipe/pee
 BrewApps+=(netcat)              # play with sockets
 BrewApps+=(node)                # NodeJS
+BrewApps+=(neovim)              # Replacing the venerable vi
 BrewApps+=(pnpm)                # NodeJS package manager (faster than npm)
 BrewApps+=(procs)               # process list (replaces ps)
 BrewApps+=(python)              # Python language

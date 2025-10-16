@@ -70,12 +70,7 @@
     ],
     "UserPromptSubmit": [
       {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "uv run ~/.claude/hooks/user_prompt_submit.py"
-          }
-        ]
+        "hooks": []
       }
     ],
     "PreCompact": [

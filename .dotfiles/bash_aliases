@@ -53,10 +53,6 @@ alias d=docker
 alias p=podman
 alias less='less -R'
 
-# For claude-docker
-export DOCKER=podman
-alias docker=podman
-
 # Search history
 h () {
     pattern="${1:-.}"
@@ -77,6 +73,10 @@ rcd() {
 alias po=popd
 alias pu=pushd
 alias cd=pushd
+
+# vim
+alias vi='nvim'
+alias vim='nvim'
 
 # utilities
 command -v bat   &>/dev/null && alias cat='bat --paging=never'
