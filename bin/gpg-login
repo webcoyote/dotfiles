@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+pkill gpg-agent || true
+if echo "test" | gpg --clearsign &> /dev/null ; then
+    echo "gpg-login successful"
+else
+    exitcode=$?
+    echo "gpg-login failed"
+    exit "$exitcode"
+fi

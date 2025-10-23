@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# Pat's airpods
-DEVICE="${DEVICE:-"FC:B6:D8:D6:98:33"}"
+# My shokz
+DEVICE="${DEVICE:-"a8-f5-e1-90-09-d3"}"
 
 # Parse options
 eval set -- "$(getopt -o d:h --long device:,help -n "${BASH_SOURCE[0]}" -- "$@")"

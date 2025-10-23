@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# In the current shell, remove a directory from the PATH environment variable
+# https://stackoverflow.com/a/2684300
+
+is_sourced() {
+    if [ -n "$ZSH_VERSION" ]; then
+       case $ZSH_EVAL_CONTEXT in *:file:*) return 0;; esac
+    else  # Add additional POSIX-compatible shell names here, if needed.
+       case ${0##*/} in dash|-dash|bash|-bash|ksh|-ksh|sh|-sh) return 0;; esac
+    fi
+    return 1  # NOT sourced.
+}
+
+if ! is_sourced ; then
+    echo >&2 "ERROR: this file must be sourced to change the shell's path"
+    exit 1
+fi
+
+if [[ $# != 1 ]]; then
+    echo >&2 "usage: remove-dir-from-path DIR"
+    return
+fi
+
+
+# PATH => /bin:/opt/a dir/bin:/sbin
+OLDPATH="$PATH"
+REMOVE="$1"
+WORK=":$PATH:"
+WORK="${WORK/:$REMOVE:/:}"
+# WORK => :/bin:/sbin:
+WORK="${WORK%:}"
+WORK="${WORK#:}"
+PATH="$WORK"
+# PATH => /bin:/sbin
+export PATH
+
+[[ "${VERBOSE:-0}" =~ ^[0-9]+$ ]] && VERBOSE="${VERBOSE:-0}" || VERBOSE=1
+if [[ $VERBOSE -gt 0 ]]; then
+    diff <(echo "$OLDPATH" | tr ':' '\n') <(echo "$PATH" | tr ':' '\n')
+fi

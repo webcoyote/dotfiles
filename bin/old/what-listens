@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+if [[ $# != 1 ]]; then
+    echo "Usage: ${BASH_SOURCE[0]} PORT"
+    exit 0
+fi
+
+lsof -n -i ":$1" | rg LISTEN

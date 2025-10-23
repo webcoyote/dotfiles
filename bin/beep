@@ -1,102 +1,93 @@
-#!/usr/bin/env -S uv run --script
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#     "pyttsx3",
-# ]
-# ///
+#!/usr/bin/env bash
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
 
-import os
-import random
-import re
-import subprocess
-import sys
-from typing import Optional, Tuple
+# Clean up name by replacing hyphens and underscores with spaces
+clean_name() {
+    local name="$1"
+    echo "$name" | sed 's/[-_]/ /g'
+}
 
-def get_git_branch() -> Optional[str]:
-    """
-    Get the current git branch name.
+get_git_repo() {
+    local repo=""
+    if repo=$(git rev-parse --show-toplevel 2>/dev/null); then
+        clean_name "$(basename "$repo")"
+    else
+        clean_name "$(basename "$(pwd)")"
+    fi
+}
 
-    Returns:
-        Branch name or None if not in a git repository
-    """
-    try:
-        result = subprocess.run(
-            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-            capture_output=True,
-            text=True,
-            timeout=2
-        )
-        if result.returncode == 0:
-            return result.stdout.strip()
-    except (subprocess.TimeoutExpired, subprocess.SubprocessError, FileNotFoundError):
-        pass
-    return None
+get_git_branch() {
+    local branch=""
+    if branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null); then
+        clean_name "$branch"
+    else
+        echo ""
+    fi
+}
 
-
-def generate_completion_message() -> str:
-    """
-    Generate a fallback completion message using random selection.
-
-    Returns:
-        str: A randomly selected completion message
-    """
+# Generate a random completion message
+generate_completion_message() {
+    local project branch branch_text
 
     # Get project and branch information
-    project_name = os.path.basename(os.getcwd())
-    branch = get_git_branch()
+    project=$(get_git_repo)
+    branch=$(get_git_branch)
 
-    # Clean up names for better readability
-    project_name = re.sub(r'[-_]', ' ', project_name)
-    branch = re.sub(r'[-_]', ' ', branch) if branch else ""
-    branch_text = f" on branch {branch}" if branch and branch != "main" else ""
+    # Add branch text if not on main
+    if [[ -n "$branch" && "$branch" != "main" ]]; then
+        branch_text=" on branch $branch"
+    else
+        branch_text=""
+    fi
 
     # Random completion messages
-    messages = [
-        f"{project_name}{branch_text} is done!",
-        f"{project_name}{branch_text} finished!",
-        f"Completed {project_name}{branch_text}!",
-        f"{project_name}{branch_text} is ready!",
-    ]
+    local messages=(
+        "${project}${branch_text} is done!"
+        "${project}${branch_text} finished!"
+        "Completed ${project}${branch_text}!"
+        "${project}${branch_text} is ready!"
+    )
 
-    return random.choice(messages)
+    # Select a random message
+    local random_index=$((RANDOM % ${#messages[@]}))
+    echo "${messages[$random_index]}"
+}
 
+# Speak text using macOS 'say' command
+speak_text() {
+    local text="$1"
 
-def speak_text(text: str) -> bool:
-    """
-    Speak text using pyttsx3 TTS.
+    # Check if 'say' command is available (macOS)
+    if ! command -v say &> /dev/null; then
+        echo "❌ 'say' command not found. Text-to-speech not available." >&2
+        return 1
+    fi
 
-    Args:
-        text: Text to speak
+    # Speak the text with a moderate rate
+    say -r 200 "$text"
+}
 
-    Returns:
-        True if speech was successful, False otherwise
-    """
-    try:
-        import pyttsx3
+# Display notification using macOS osascript
+display_notification() {
+    local message="$1"
+    local title="${2:-Done}"
 
-        # Initialize TTS engine
-        engine = pyttsx3.init()
+    # Check if 'osascript' command is available (macOS)
+    if ! command -v osascript &> /dev/null; then
+        echo "❌ 'osascript' command not found. Notifications not available." >&2
+        return 1
+    fi
 
-        # Configure engine settings
-        engine.setProperty('rate',  200)    # Speech rate (words per minute)
-        engine.setProperty('volume', 0.6)  # Volume (0.0 to 1.0)
+    # Display the notification
+    osascript -e "display notification \"$message\" with title \"$title\""
+}
 
-        # Speak the text
-        engine.say(text)
-        engine.runAndWait()
+main() {
+    local message
+    message=$(generate_completion_message)
+    display_notification "$message" "Ready"
+    speak_text "$message"
+}
 
-        return True
-
-    except Exception:
-        return False
-
-def main():
-    message = generate_completion_message()
-    success = speak_text(message)
-    if not success:
-        print(f"❌ Failed to speak: {notification_message}")
-        sys.exit(1)
-
-if __name__ == '__main__':
-    main()
+main "$@"

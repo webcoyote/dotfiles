@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+
+
+# Detect if running inside WSL1 ("Microsoft") or WSL2 ("microsoft")
+if [[ $(uname -r) =~ icrosoft ]]; then
+    MY_OSTYPE=wsl
+else
+    MY_OSTYPE="$OSTYPE"
+fi
+
+case "$MY_OSTYPE" in
+    darwin*)
+        osascript -e "display notification \"$@\" with title \"Bash\""
+
+        # Alternatives
+        # https://github.com/vjeantet/alerter
+        # https://github.com/julienXX/terminal-notifier
+    ;;
+
+    linux*)
+        /usr/bin/notify-send "$@"
+    ;;
+
+#    msys*)
+#    ;;
+
+#    cygwin*)
+#    ;;
+
+#    wsl*)
+#    ;;
+
+    *)
+        echo "Not implemented for $MY_OSTYPE"
+        exit 1
+    ;;
+esac

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+# If we're in a repository then use that as the session name, otherwise
+# use the name of the current directory
+SESSION_NAME="$(git rev-parse --show-toplevel 2>/dev/null || "$PWD")"
+
+# Special case the root directory
+if [[ "$SESSION_NAME" == "/" ]]; then
+    SESSION_NAME="rootdir"
+else
+    SESSION_NAME="$(basename "$SESSION_NAME")"
+fi
+
+# Create or attach to $SESSION_NAME
+exec tmux new -A -s "$SESSION_NAME"
