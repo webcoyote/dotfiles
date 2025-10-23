@@ -1,7 +1,79 @@
 #!/usr/bin/env bash
+# Run shellcheck on shell-scripts before commit
 set -Eeuo pipefail
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+SCRIPT_NAME="$(basename "${BASH_SOURCE[0]}")"
 
-# Find filenames without extensions and run shellcheck on them
-# SC1017 => Literal carriage return (ignore Windows line endings)
-find "$SCRIPT_DIR" -type f ! \( -name "*.*" -o -wholename "./.git/*" \) -print0 | xargs -0 shellcheck -a -e SC1017
+YELLOW='\033[1;33m'
+GRAY='\033[90m'
+CYAN='\033[36m'
+NC='\033[0m' # No Color
+
+# Set VERBOSE=non-number to VERBOSE=1, otherwise use the number
+[[ "${VERBOSE:-0}" =~ ^[0-9]+$ ]] && VERBOSE="${VERBOSE:-0}" || VERBOSE=1
+
+trace () {
+    [[ "$VERBOSE" -lt 2 ]] || echo >&2 -e "🔬 ${GRAY}$*${NC}"
+}
+debug () {
+    [[ "$VERBOSE" -lt 1 ]] || echo >&2 -e "🔍 ${CYAN}$*${NC}"
+}
+warn () {
+    echo >&2 -e "⚠️ ${YELLOW}$*${NC}"
+}
+
+if ! command -v shellcheck &>/dev/null ; then
+    warn "$SCRIPT_NAME: shellcheck not installed; skipping checks"
+    exit 0
+fi
+
+# Function to find shell script files
+#   ^[^.]+$ - files with no dots (no extension)
+#   \.sh$   - files ending with .sh
+find_shell_files() {
+    local search_path="${1:-.}"
+    fd --no-ignore --hidden -t f '(^[^.]+$|\.sh$)' --exclude '.git' -0 "$search_path"
+}
+
+FILES=()
+if [[ $# -gt 0 ]]; then
+    # Use files specified on the command line
+    for file in "$@"; do
+        if [[ -d "$file" ]]; then
+            # Find all matching files in the directory
+            while IFS= read -r -d '' found_file; do
+                trace "Found $found_file"
+                FILES+=("$found_file")
+            done < <(find_shell_files "$file")
+        else
+            trace "Found $file"
+            FILES+=("$file")
+        fi
+    done
+else
+    # Find all the script files in the entire project
+    while IFS= read -r -d '' file; do
+        trace "Found $file"
+        FILES+=("$file")
+    done < <(find_shell_files)
+fi
+
+# Scan all the files
+EXITCODE=0
+for file in "${FILES[@]}"; do
+    # Skip binary files
+    if ! file --mime-encoding "$file" | grep -q 'us-ascii\|utf-8\|iso-8859'; then
+        trace "Skipping $file (binary file)"
+        continue
+    fi
+    # Ignore files that don't have shell-script shebang: "#!...sh"
+    if ! awk 'NR==1 && /^#!/ && /sh$/{exit 0} {exit 1}' "$file" ; then
+        trace "Skipping $file (not shell script)"
+        continue
+    fi
+
+    debug "Checking $file"
+    shellcheck "$file" || EXITCODE=1
+done
+
+exit "$EXITCODE"

@@ -4,8 +4,7 @@ set -Eeuo pipefail
 function isadmin() {
     case "$OSTYPE" in
         msys*|cygwin*)
-            net session &>/dev/null
-            if [[ $? -ne 0 ]]; then
+            if ! net session &>/dev/null ; then
                 return 1 # user
             else
                 return 0 # admin

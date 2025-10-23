@@ -5,7 +5,7 @@ trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
 # Clean up name by replacing hyphens and underscores with spaces
 clean_name() {
     local name="$1"
-    echo "$name" | sed 's/[-_]/ /g'
+    echo "${name//[-_]/ }"
 }
 
 get_git_repo() {

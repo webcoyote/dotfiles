@@ -13,7 +13,7 @@ fi
 
 case "$MY_OSTYPE" in
     darwin*)
-        osascript -e "display notification \"$@\" with title \"Bash\""
+        osascript -e "display notification \"$*\" with title \"Bash\""
 
         # Alternatives
         # https://github.com/vjeantet/alerter

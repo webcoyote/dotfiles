@@ -8,7 +8,7 @@
 # Standard shell script startup
 set -Eeuo pipefail
 trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+#SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Time scripts
 START_TIME=$(date +%s.%N)
@@ -49,18 +49,18 @@ heredoc(){ IFS=$'\n' read -r -d '' "${1}" || true; }
 
 run_quietly () {
   # Show command if verbose
-  [[ ${VERBOSE:0} -lt 1 ]] || echo >&2 "+ $@"
+  [[ ${VERBOSE:0} -lt 1 ]] || echo >&2 "+ " "$@"
 
   # Run command and show output if it fails
   OUTPUT=$("$@") || (
     EXITCODE=$?
-    error Command failed: $(basename $0) "$@"
-    echo >&2 $OUTPUT
-    exit $EXITCODE
+    error "Command failed: $(basename "$0")" "$@"
+    echo >&2 "$OUTPUT"
+    exit "$EXITCODE"
   )
 
   # Show output of command if very verbose
-  [[ ${VERBOSE:0} -lt 3 ]] || echo >&2 $OUTPUT
+  [[ ${VERBOSE:0} -lt 3 ]] || echo >&2 "$OUTPUT"
 }
 
 
@@ -74,7 +74,7 @@ exists() {
 }
 
 require_root () {
-  if [ $(id -u) -ne 0 ]; then
+  if [ "$(id -u)" -ne 0 ]; then
     abort 'ERROR: You need to run this script with sudo or as root.'
   fi
 }
@@ -112,14 +112,15 @@ if [[ -n "${BASHFUL_DEBUG:-}" ]]; then
 fi
 
 # Set XARGS variable to handle lack of '-r' option on OSX; then use `"${XARGS[@]}" ...`
-if ! command -v gxargs &>/dev/null ; then
-    XARGS=("gxargs" "--no-run-if-empty")
-elif args --version 2>&1 |grep -s GNU &>/dev/null ; then
-    XARGS=("xargs" "--no-run-if-empty")
-else
-    XARGS=("xargs")
-fi
+#if ! command -v gxargs &>/dev/null ; then
+#    XARGS=("gxargs" "--no-run-if-empty")
+#elif args --version 2>&1 |grep -s GNU &>/dev/null ; then
+#    XARGS=("xargs" "--no-run-if-empty")
+#else
+#    XARGS=("xargs")
+#fi
+#export XARGS
 
 
-title_case() { set ${*,,} ; echo ${*^} ; }
-lower_case() { set ${*,,} ; echo ${*} ; }
+title_case() { set "${*,,}" ; echo "${*^}" ; }
+lower_case() { set "${*,,}" ; echo "${*}" ; }
