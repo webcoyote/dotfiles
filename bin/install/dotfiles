@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+CYAN='\033[0;36m'
+NC='\033[0m' # No Color
+
+error() {
+    echo -e "${RED}ERROR: $1${NC}" >&2
+    exit 1
+}
+
+info() {
+    echo -e "${CYAN}$1${NC}"
+}
+
+success() {
+    echo -e "${GREEN}$1${NC}"
+}
+
+warning() {
+    echo -e "${YELLOW}$1${NC}"
+}
+
+main() {
+    # Check if dotfiles already installed
+    if [[ -d "$HOME/.git" ]]; then
+        error "Dotfiles repo already exists ('$HOME/.git')"
+    fi
+
+    info "Installing dotfiles..."
+
+    # Clone repository into a temporary directory
+    MYTMPDIR="$(mktemp -d)"
+    trap 'rm -rf "$MYTMPDIR"' EXIT
+
+    info "Cloning repository..."
+    if ! git clone --no-checkout "git@github.com:webcoyote/dotfiles" "$MYTMPDIR"; then
+        error "Failed to clone repository. Make sure you have SSH access configured."
+    fi
+
+    # Configure the repository
+    info "Configuring repository..."
+    (
+        cd "$MYTMPDIR" >/dev/null
+
+        # Rename "origin" to "upstream" so user can add their own fork as "origin"
+        git remote rename origin upstream
+
+        # Don't show untracked files (home directory has thousands of files)
+        git config --local status.showUntrackedFiles no
+
+        # Make it less annoying to add files when everything is gitignored
+        git config advice.addIgnoredFile false
+    )
+
+    # Move repository to home directory
+    info "Moving repository to home directory..."
+    mv "$MYTMPDIR/.git" "$HOME"
+
+    # Non-destructively update configuration files
+    info "Checking out dotfiles..."
+    (
+        cd "$HOME" >/dev/null
+
+        # Reset and checkout deleted files (files that exist in repo but not in $HOME)
+        git ls-files -z -d | xargs -0 git reset -- >/dev/null 2>&1 || true
+        git ls-files -z -d | xargs -0 git checkout -- >/dev/null 2>&1 || true
+
+        success "SUCCESS! Your dotfiles have been installed"
+
+        if ! git diff --quiet 2>/dev/null; then
+            warning "Some files were NOT overwritten because they contain local changes:"
+            git status -sb
+            echo ""
+            warning "To accept all dotfile changes, run:"
+            echo "  cd $HOME && git reset . && git checkout ."
+        fi
+    )
+}
+
+main
