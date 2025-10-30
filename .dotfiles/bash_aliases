@@ -45,8 +45,8 @@ export GPG_TTY=$(tty)
 export TERM=xterm-256color
 
 # misc aliases
-alias clod="/Users/Shared/sandvault-pat/personal/sandbox/clodpod/clod --no-graphics"
-alias sv="/Users/Shared/sandvault-pat/personal/sandbox/sandvault/sv"
+alias clod="/Users/Shared/sv-pat/personal/sandbox/clodpod/clod --no-graphics"
+alias sv="/Users/Shared/sv-pat/personal/sandbox/sandvault/sv"
 alias zg='zoxide --basedir "$(git rev-parse --show-toplevel)"'
 alias c=claude
 alias d=docker
