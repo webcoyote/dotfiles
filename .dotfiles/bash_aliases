@@ -201,3 +201,9 @@ fi
 set -o noclobber
 alias cp='cp -i'
 alias mv='mv -i'
+
+
+##############
+# My stuff
+##############
+export DEVICE_NAME=P13

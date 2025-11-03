@@ -18,5 +18,5 @@
         "dist",
         "cache"
     ],
-    "file_exclude_patterns": ["*.jsonl"]
+    "file_exclude_patterns": ["*.jsonl"],
 }
