@@ -11,6 +11,7 @@
     "index_files": false,
     "folder_exclude_patterns": [
         ".git",
+        ".build",
         ".DerivedData",
         "worktrees",
         "node_modules",
