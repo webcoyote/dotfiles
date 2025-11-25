@@ -235,6 +235,7 @@ fi
 # Install applications
 ##############
 BrewApps=()
+BrewApps+=(1password-cli)       # password management
 BrewApps+=(atuin)               # better shell history
 BrewApps+=(bash)                # replace OSX bash 3.2 with something modern
 BrewApps+=(bat)                 # better cat

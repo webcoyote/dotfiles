@@ -1,11 +1,56 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+# Usage function
+usage() {
+    cat >&2 <<EOF
+Usage: $(basename "$0") [OPTIONS]
+
+Check GPG key cache status and optionally trigger GPG login.
+
+OPTIONS:
+    -s, --status    Check login status only (outputs "true" or "false")
+    -h, --help      Show this help message
+
+Without options, checks if GPG key is cached and attempts login if not.
+EOF
+    exit 1
+}
+
+# Parse arguments
+STATUS_MODE=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -s|--status)
+            STATUS_MODE=true
+            shift
+            ;;
+        -h|--help)
+            usage
+            ;;
+        *)
+            echo >&2 "Unknown option: $1"
+            usage
+            ;;
+    esac
+done
 
 # Key already cached in memory?
-RESULT=$(gpg-connect-agent 'keyinfo --list' /bye 2>/dev/null | \
-    awk 'BEGIN{CACHED=0} /^S/ {if($7==1){CACHED=1}} END{if(NR>0){print CACHED} else {print "none"}}')
+RESULT=$(timeout 1 gpg-connect-agent 'keyinfo --list' /bye 2>/dev/null | \
+    awk 'BEGIN{CACHED=0} /^S/ {if($7==1){CACHED=1}} END{if(NR>0){print CACHED} else {print "none"}}' || echo "timeout")
 if [[ "$RESULT" == "1" ]]; then
-    echo >&2 "gpg-login cached"
+    if [[ "$STATUS_MODE" == "true" ]]; then
+        echo "true"
+    else
+        echo >&2 "gpg-login cached"
+    fi
+    exit 0
+fi
+
+# If in status mode and not cached, return false
+if [[ "$STATUS_MODE" == "true" ]]; then
+    echo "false"
     exit 0
 fi
 
