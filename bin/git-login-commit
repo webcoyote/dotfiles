@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+if [[ $(gpg-login --status || true) != "true" ]]; then
+    echo >&2 "ERROR: user needs to run gpg-login interactively to enter password. Do not run from Claude Code."
+    exit 1
+fi
+
+exec /opt/homebrew/bin/git commit "$@"
