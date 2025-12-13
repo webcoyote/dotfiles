@@ -19,8 +19,8 @@
 # Convert GitHub URLS to use SSH instead of HTTPS to avoid password entry
 # https://blog.scottlowe.org/2023/12/11/automatically-transforming-git-urls/
 ## ===> this seems to be causing problems with Xcode
-#[url "git@github.com:"]
-#   insteadOf = "https://github.com/"
+[url "git@github.com:"]
+   insteadOf = "https://github.com/"
 
 [core]
 	editor = vi
