@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Minimal git worktree helper - leverages git's native capabilities
 # Usage: tree-me <command> [options]
 #
@@ -8,8 +8,10 @@
 # This enables:
 # - Automatic cd to worktree after checkout/create/pr commands
 # - Tab completion for commands and branch names
+#
+# from https://haacked.com/archive/2025/11/21/tree-me/
 
-set -e
+set -Eeuo pipefail
 
 # Worktree organization: ~/dev/worktrees/<repo>/<branch>
 WORKTREE_ROOT="${WORKTREE_ROOT:-$HOME/dev/worktrees}"
@@ -115,7 +117,7 @@ if [ -n "$BASH_VERSION" ]; then
         case "$prev" in
             checkout|co|remove|rm)
                 local branches
-                branches=$(git worktree list 2>/dev/null | sed -n 's/.*\[\([^]]*\)\].*/\1/p' | tail -n +2)
+                branches=$(git worktree list 2>/dev/null | sed -n 's/.*\[\([^]]*\)\].*/\1/p' | tail -n +2 || true)
                 COMPREPLY=( $(compgen -W "$branches" -- "$cur") )
                 return 0
                 ;;
@@ -147,7 +149,7 @@ if [ -n "$ZSH_VERSION" ]; then
         elif (( CURRENT == 3 )); then
             case "$words[2]" in
                 checkout|co|remove|rm)
-                    branches=(${(f)"$(git worktree list 2>/dev/null | sed -n 's/.*\[\([^]]*\)\].*/\1/p' | tail -n +1)"})
+                    branches=(${(f)"$(git worktree list 2>/dev/null | sed -n 's/.*\[\([^]]*\)\].*/\1/p' | tail -n +1 || true)"})
                     _describe 'branch' branches
                     ;;
             esac
@@ -163,8 +165,8 @@ EOF
         path="$WORKTREE_ROOT/$repo/$branch"
 
         # Check if worktree already exists
-        if git worktree list | grep -q "\[$branch\]"; then
-            existing=$(git worktree list | grep "\[$branch\]" | awk '{print $1}')
+        existing=$(git worktree list | { grep "\[$branch\]" || true; } | awk '{print $1}')
+        if [ -n "$existing" ]; then
             echo "✓ Worktree already exists: $existing"
             echo "TREE_ME_CD:$existing"
             exit 0
@@ -189,8 +191,8 @@ EOF
         path="$WORKTREE_ROOT/$repo/$branch"
 
         # Check if worktree already exists
-        if git worktree list | grep -q "\[$branch\]"; then
-            existing=$(git worktree list | grep "\[$branch\]" | awk '{print $1}')
+        existing=$(git worktree list | { grep "\[$branch\]" || true; } | awk '{print $1}')
+        if [ -n "$existing" ]; then
             echo "✓ Worktree already exists: $existing"
             echo "TREE_ME_CD:$existing"
             exit 0
@@ -217,8 +219,8 @@ EOF
         path="$WORKTREE_ROOT/$repo/$branch"
 
         # Check if worktree already exists
-        if git worktree list | grep -q "\[$branch\]"; then
-            existing=$(git worktree list | grep "\[$branch\]" | awk '{print $1}')
+        existing=$(git worktree list | { grep "\[$branch\]" || true; } | awk '{print $1}')
+        if [ -n "$existing" ]; then
             echo "✓ Worktree already exists: $existing"
             echo "TREE_ME_CD:$existing"
             exit 0
@@ -237,7 +239,7 @@ EOF
 
     remove|rm)
         branch="${1:?Branch name required. Usage: tree-me remove <branch>}"
-        existing=$(git worktree list | grep "\[$branch\]" | awk '{print $1}')
+        existing=$(git worktree list | { grep "\[$branch\]" || true; } | awk '{print $1}')
         if [ -z "$existing" ]; then
             echo "Error: No worktree found for branch: $branch" >&2
             exit 1
