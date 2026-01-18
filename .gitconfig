@@ -75,6 +75,7 @@
 	logg = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --graph
 	pr = "!f() { if [ $# -lt 1 ]; then echo \"Usage: git pr <id> [<remote>] # assuming <remote>[=origin] is on GitHub\"; else git checkout -q \"$(git rev-parse --verify HEAD)\" && git fetch -fv \"${2:-origin}\" pull/\"$1\"/head:pr/\"$1\" && git checkout pr/\"$1\"; fi; }; f"
 	pushf = push --force-with-lease
+	lfs-install = !git -c core.hooksPath=\"$(git rev-parse --git-dir)/hooks\" lfs install
 [diff]
 	colorMoved = default
 [merge]

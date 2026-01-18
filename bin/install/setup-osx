@@ -3,19 +3,50 @@ set -Eeuo pipefail
 trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ $OSTYPE != 'darwin'* ]]; then
-    echo >&2 "ERROR: this script is for Mac OSX"
-    exit 1
-fi
-
 # Mac annoyances
 #
 # - window management isn't as keyboard friendly as Windows. Solution: Rectangle.app
 # - alt-tab only shows apps, not windows. Solution: Alt-Tab.app
 # - BSD terminal apps are years out of date. Solution: brew install coreutils
 # - terminal application is bad. Solution: Ghostty.app
-# - hard to tell which window is active: HammerSpoon.app + custom config (but still kinda suxor)
+# - hard to tell which window is active: HammerSpoon.app + custom config
 
+abort() {
+  echo >&2 "ERROR: $*"
+  exit 1
+}
+
+escape() {
+  printf '%s' "${1//\'/\'}"
+}
+
+# Preconditions
+[[ "$OSTYPE" == 'darwin'* ]] || abort "this script is for Mac OSX only"
+[[ "$USER" == "root" ]] && abort "Run script as yourself, not root."
+
+# Always prompt for sudo password at least to avoid doing root stuff unexpectedly
+sudo --reset-timestamp
+
+
+# Set some basic security settings
+sudo defaults write com.apple.screensaver askForPassword -int 1
+sudo defaults write com.apple.screensaver askForPasswordDelay -int 0
+# Enable firewall to block incoming connections to most apps, but allow
+# specific, user-defined services (like file sharing).
+sudo defaults write /Library/Preferences/com.apple.alf globalstate -int 1
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.alf.agent.plist 2>/dev/null
+
+# Configure login screen for "found this computer?"
+LOGIN_TEXT=$(escape "Found this computer? Please contact webcoyote@gmail.com")
+echo "$LOGIN_TEXT" | grep -q '[()]' && LOGIN_TEXT="'$LOGIN_TEXT'"
+sudo defaults write /Library/Preferences/com.apple.loginwindow \
+LoginwindowText \
+"$LOGIN_TEXT"
+
+# Check full-disk encryption
+if ! fdesetup status | grep -E "FileVault is (On|Off, but will be enabled after the next restart)." &>/dev/null ; then
+  abort "Run 'sudo fdesetup enable -user \"$USER\"' to enable full-disk encryption."
+fi
 
 ##############
 # Create SSH key
@@ -167,14 +198,6 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 
 
 ##############
-# Screensaver
-##############
-# Require password immediately after sleep or screen saver begins
-defaults write com.apple.screensaver askForPassword -int 1
-defaults write com.apple.screensaver askForPasswordDelay -int 0
-
-
-##############
 # Spotlight
 ##############
 defaults write com.apple.spotlight orderedItems -array \
@@ -316,6 +339,11 @@ CaskApps+=(windows-app)         # remote desktop
 CaskApps+=(zed)                 # text editor
 CaskApps+=(zoom)                # chat for work
 brew install --quiet --cask "${CaskApps[@]}"
+
+# Turn off OneDrive updater
+launchctl remove com.microsoft.OneDriveStandaloneUpdater
+sudo launchctl remove com.microsoft.OneDriveStandaloneUpdaterDaemon
+sudo launchctl remove com.microsoft.OneDriveUpdaterDaemon
 
 # Rust can be installed via brew, but Wasm targets do not work, so use rustup
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

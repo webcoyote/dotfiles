@@ -206,4 +206,8 @@ alias mv='mv -i'
 ##############
 # My stuff
 ##############
+# For my iOS app build scripts
 export DEVICE_NAME=P13
+
+# For `tree-me`
+export WORKTREE_ROOT="$HOME/personal/worktrees"
