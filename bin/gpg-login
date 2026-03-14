@@ -54,8 +54,8 @@ if [[ "$STATUS_MODE" == "true" ]]; then
     exit 0
 fi
 
-pkill gpg-agent || true
-if ! echo "test" | gpg --clearsign &> /dev/null ; then
+gpgconf --kill gpg-agent || true
+if ! echo "test" | gpg --clearsign ; then
     echo >&2 "gpg-login failed"
     exit 1
 fi

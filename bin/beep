@@ -85,7 +85,11 @@ display_notification() {
 
 main() {
     local message
-    message=$(generate_completion_message)
+    if [[ -z "${1:-}" ]]; then
+        message=$(generate_completion_message)
+    else
+        message="$1"
+    fi
     display_notification "$message" "Ready"
     speak_text "$message"
 }

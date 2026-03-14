@@ -41,14 +41,17 @@ export HISTIGNORE="ls:ll:exit:gst:pu:po:pushd:popd"
 # GPG for signing git commits
 export GPG_TTY=$(tty)
 
-# Make the backspace key work in SSH
-export TERM=xterm-256color
+# Make the backspace key work in ghostty
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+    export TERM=xterm-256color
+fi
 
 # misc aliases
 alias clod="/Users/Shared/sv-pat/personal/sandbox/clodpod/clod --no-graphics"
-alias sv="/Users/Shared/sv-pat/personal/sandbox/sandvault/sv"
+#alias sv="/Users/Shared/sv-pat/personal/sandbox/sandvault/sv"
 alias zg='zoxide --basedir "$(git rev-parse --show-toplevel)"'
 alias c=claude
+alias co=codex
 alias d=docker
 alias p=podman
 alias less='less -R'

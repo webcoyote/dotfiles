@@ -47,6 +47,7 @@
     "command": "bash ~/.claude/statusline.sh"
   },
   "alwaysThinkingEnabled": false,
+  "skipDangerousModePermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086709267
   }
