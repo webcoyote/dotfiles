@@ -119,14 +119,18 @@ def main():
     project = get_project_name()
     branch = get_git_branch()
 
+    should_speak = not os.environ.get("USER", "").startswith("sandvault-")
+
     if args.command == "stop":
         display_task_complete(project, branch)
         completion_message = generate_completion_message(project, branch)
-        speak_text(completion_message)
+        if should_speak:
+            speak_text(completion_message)
     elif args.command == "notification":
         display_notification(project, branch)
         notification_message = generate_notification_message(project, branch)
-        speak_text(notification_message)
+        if should_speak:
+            speak_text(notification_message)
     else:
         parser.print_help()
         sys.exit(1)
