@@ -15,6 +15,18 @@ warn () {
   echo >&2 -e "\033[33m$*\033[0m"
 }
 
+# When running inside cmux shell, use the cmux version of claude,
+# which provides additional notifications. It will call back into
+# this script, so avoid recursive calls back to it.
+if [[ "${CMUX_SHELL_INTEGRATION:-0}" == "1"
+   && "${PATW_CLAUDE_ENTERED:-0}" == "0"
+   && -x "/Applications/cmux.app/Contents/Resources/bin/claude"
+]]; then
+    echo >&2 "CMUX claude"
+    export PATW_CLAUDE_ENTERED=1
+    exec "/Applications/cmux.app/Contents/Resources/bin/claude" "$@"
+fi
+
 heredoc DEFAULT_PROMPT << EOF
     Never use pleasantries, validation, or congratulatory language
 EOF
