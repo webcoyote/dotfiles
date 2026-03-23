@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Rename workspace in cmux to the directory name
+set -Eeuo pipefail
+trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
+
+# cmux rename-workspace only works if we're running cmux
+[[ "${CMUX_SHELL_INTEGRATION:-0}" == "0" ]] && exit
+
+if [[ $# -eq 0 ]]; then
+    NAME="$(basename "$PWD")"
+else
+    NAME="$@"
+fi
+
+cmux rename-workspace "$NAME"
