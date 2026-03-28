@@ -6,26 +6,25 @@
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true"
   },
   "includeCoAuthoredBy": false,
-  "permissions": {
-    "allow": [
-      "Read(./.env.example)",
-      "Read(./.env.sample)"
-    ],
-    "deny": [
-      "Read(./.env)",
-      "Read(./.env.*)",
-      "Read(./secrets/**)",
-      "Read(./config/credentials.json)"
-    ]
-  },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --script ~/.claude/hooks/deny_file_access.py"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "uv run ~/.claude/hooks/alert.py notification"
+            "command": "uv run --script ~/.claude/hooks/alert.py notification"
           }
         ]
       }
@@ -36,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "uv run ~/.claude/hooks/alert.py stop"
+            "command": "uv run --script ~/.claude/hooks/alert.py stop"
           }
         ]
       }
@@ -50,5 +49,6 @@
   "skipDangerousModePermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086709267
-  }
+  },
+  "voiceEnabled": true
 }

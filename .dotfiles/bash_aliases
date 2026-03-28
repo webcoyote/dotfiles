@@ -191,6 +191,11 @@ if command -v fd &>/dev/null ; then
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 
+if command -v tree-me &>/dev/null ; then
+    source <(tree-me shellenv)
+    alias t=tree-me
+fi
+
 
 ##############
 # SSH
@@ -213,4 +218,4 @@ alias mv='mv -i'
 export DEVICE_NAME=P13
 
 # For `tree-me`
-export WORKTREE_ROOT="$HOME/personal/worktrees"
+export WORKTREE_ROOT="/Users/Shared/sv-pat/worktrees"

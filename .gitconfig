@@ -94,3 +94,5 @@
 [delta]
 	light = false	  # true if you're in a terminal with a light background color
 	navigate = true	# use n and N to move between diff sections
+[safe]
+	directory = /Users/Shared/sv-pat/*
