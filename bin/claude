@@ -2,15 +2,6 @@
 set -Eeuo pipefail
 trap 'echo "${BASH_SOURCE[0]}: line $LINENO: $BASH_COMMAND: exitcode $?"' ERR
 
-# Defining HEREDOCS "almost just like" Ruby
-# http://ss64.com/bash/read.html
-# http://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
-# Example:
-# heredoc MESSAGE << EOF
-#    your favorite text here
-# EOF
-heredoc(){ IFS=$'\n' read -r -d '' "${1}" || true; }
-
 warn () {
   echo >&2 -e "\033[33m$*\033[0m"
 }
@@ -27,15 +18,13 @@ if [[ "${CMUX_SHELL_INTEGRATION:-0}" == "1"
     exec "/Applications/cmux.app/Contents/Resources/bin/claude" "$@"
 fi
 
-heredoc DEFAULT_PROMPT << EOF
-    Never use pleasantries, validation, or congratulatory language
-EOF
+DEFAULT_PROMPT='Never use pleasantries or congratulatory language'
 
 DIR="${DIR:-$(git rev-parse --show-toplevel 2>/dev/null)}" || DIR="$HOME"
 cd "$DIR"
 warn "Running claude in ${DIR/#$HOME/\~} with --dangerously-skip-permissions"
 
-exec "$(brew --prefix)/bin/claude" \
+exec "$HOME/.local/bin/claude" \
   --dangerously-skip-permissions \
   --append-system-prompt "${PROMPT:-$DEFAULT_PROMPT}" \
   "$@"

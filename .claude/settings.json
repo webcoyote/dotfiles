@@ -45,10 +45,22 @@
     "type": "command",
     "command": "bash ~/.claude/statusline.sh"
   },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "AppTestCircuit@webcoyote-AppTestCircuit": true
+  },
+  "extraKnownMarketplaces": {
+    "webcoyote-AppTestCircuit": {
+      "source": {
+        "source": "github",
+        "repo": "webcoyote/AppTestCircuit"
+      }
+    }
+  },
   "alwaysThinkingEnabled": false,
+  "voiceEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754086709267
-  },
-  "voiceEnabled": true
+  }
 }

@@ -6,27 +6,34 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     exit 1
 fi
 
-export PATH="$PATH:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.gem/bin:$HOME/flutter/bin"
+path_prepend() {
+    if [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="$1${PATH:+":$PATH"}"
+    fi
+}
+path_append() {
+    if [[ -d "$1" ]] && [[ ":$PATH:" != *":$1:"* ]]; then
+        export PATH="${PATH:+"$PATH:"}$1"
+    fi
+}
+
+# user bin directories
+path_prepend "$HOME/.local/bin"
+path_prepend "$HOME/bin"
 
 # Use GNU CLI binaries over outdated OSX CLI binaries
 if command -v brew &>/dev/null ; then
     BREW_PREFIX="$(brew --prefix)"
-    if [[ -d "$BREW_PREFIX/opt/coreutils/libexec/gnubin" ]]; then
-        export PATH="$BREW_PREFIX/opt/coreutils/libexec/gnubin:$PATH"
-    fi
-    if [[ -d "$BREW_PREFIX/opt/findutils/libexec/gnubin" ]]; then
-        export PATH="$BREW_PREFIX/opt/findutils/libexec/gnubin:$PATH"
-    fi
-    if [[ -d "$BREW_PREFIX/opt/gnu-getopt/bin" ]]; then
-        export PATH="$BREW_PREFIX/opt/gnu-getopt/bin:$PATH"
-    fi
-    if [[ -d "$BREW_PREFIX/opt/python/libexec/bin" ]]; then
-        export PATH="$BREW_PREFIX/opt/python/libexec/bin:$PATH"
-    fi
+    path_prepend "$BREW_PREFIX/opt/coreutils/libexec/gnubin"
+    path_prepend "$BREW_PREFIX/opt/findutils/libexec/gnubin"
+    path_prepend "$BREW_PREFIX/opt/gnu-getopt/bin"
+    path_prepend "$BREW_PREFIX/opt/python/libexec/bin"
 fi
 
-# user bin directories
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+path_append "$HOME/.cargo/bin"
+path_append "$HOME/go/bin"
+path_append "$HOME/.gem/bin"
+path_append "$HOME/flutter/bin"
 
 # The only reliably cross-platform editor
 export EDITOR=vi
@@ -219,3 +226,6 @@ export DEVICE_NAME=P13
 
 # For `tree-me`
 export WORKTREE_ROOT="/Users/Shared/sv-pat/worktrees"
+
+# for ripgrep
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
