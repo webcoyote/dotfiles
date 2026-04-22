@@ -94,3 +94,6 @@
    navigate = true   # use n and N to move between diff sections
 [safe]
    directory = /Users/Shared/sv-pat/*
+[hook "pre-commit"]
+	event = pre-commit
+	command = /Users/Shared/sv-pat/personal/git-multi-hook/hooks/pre-commit
