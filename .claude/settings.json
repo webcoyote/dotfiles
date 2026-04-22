@@ -47,7 +47,9 @@
   },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
-    "AppTestCircuit@webcoyote-AppTestCircuit": true
+    "AppTestCircuit@webcoyote-AppTestCircuit": true,
+    "skill-creator@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "webcoyote-AppTestCircuit": {

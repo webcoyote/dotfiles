@@ -37,6 +37,7 @@ path_append "$HOME/flutter/bin"
 
 # The only reliably cross-platform editor
 export EDITOR=vi
+export GUI_EDITOR="Sublime Text.app"
 
 # No dotnet spying
 DOTNET_CLI_TELEMETRY_OPTOUT=1
