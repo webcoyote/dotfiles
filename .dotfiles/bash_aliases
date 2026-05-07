@@ -17,6 +17,11 @@ path_append() {
     fi
 }
 
+# Safety
+set -o noclobber
+alias cp='cp -i'
+alias mv='mv -i'
+
 # user bin directories
 path_prepend "$HOME/.local/bin"
 path_prepend "$HOME/bin"
@@ -56,10 +61,7 @@ fi
 
 # misc aliases
 alias clod="/Users/Shared/sv-pat/personal/sandbox/clodpod/clod --no-graphics"
-#alias sv="/Users/Shared/sv-pat/personal/sandbox/sandvault/sv"
-alias zg='zoxide --basedir "$(git rev-parse --show-toplevel)"'
 alias c=claude
-alias co=codex
 alias d=docker
 alias p=podman
 alias less='less -R'
@@ -88,9 +90,6 @@ alias cd=pushd
 # vim
 alias vi='nvim'
 alias vim='nvim'
-
-# utilities
-command -v bat   &>/dev/null && alias cat='bat --paging=never'
 
 # ls
 if command -v eza &>/dev/null ; then
@@ -153,6 +152,7 @@ fi
 command -v atuin    &>/dev/null && eval "$(atuin    init "$SHELLNAME")"
 command -v zoxide   &>/dev/null && eval "$(zoxide   init "$SHELLNAME")"
 command -v starship &>/dev/null && eval "$(starship init "$SHELLNAME")"
+command -v bat      &>/dev/null && alias cat=bat
 
 # Per-directory environment variables
 if command -v direnv &>/dev/null ; then
@@ -210,13 +210,6 @@ fi
 ##############
 # Avoid password prompt *every* *single* *time* for ssh
 # [[ -f "$HOME/.dotfiles/ssh-agent" ]] && source "$HOME/.dotfiles/ssh-agent"
-
-
-
-# Safety
-set -o noclobber
-alias cp='cp -i'
-alias mv='mv -i'
 
 
 ##############
